@@ -8,7 +8,7 @@ import Base from "../layouts/Base.astro";
     <p class="mt-2 text-muted">cd: no such file or directory: <span data-path>/missing</span></p>
     <h1 class="mt-12 font-sans text-[clamp(64px,12vw,160px)] leading-[0.9] font-medium tracking-[-0.04em]">404<span class="text-accent">.</span></h1>
     <p class="mt-6 max-w-[46ch] font-sans text-lg text-muted">This page doesn't exist, or it moved. Try one of these instead.</p>
-    <ul class="mt-10 flex flex-wrap gap-2">
+    <ul class="mt-10 flex flex-wrap gap-2" data-track-from="404">
       <li><a class="btn btn-solid" href="/">cd ~</a></li>
       <li><a class="btn" href="/#work">ls work/</a></li>
       <li><a class="btn" href="/cv/">cat cv</a></li>
@@ -17,6 +17,8 @@ import Base from "../layouts/Base.astro";
 </Base>
 
 <script>
+  import "../scripts/analytics";
+
   const path = decodeURIComponent(location.pathname).slice(0, 60);
   document.querySelectorAll("[data-path]").forEach((el) => (el.textContent = path));
 </script>

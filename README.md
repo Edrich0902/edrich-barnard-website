@@ -36,7 +36,21 @@ Each mode reads its own file: `.env.development` or `.env.production`. Both are 
 | `PUBLIC_UMAMI_WEBSITE_ID` | Umami website id. Leave empty to ship without any analytics.             |
 | `PUBLIC_UMAMI_SRC`        | Umami script URL. Point it at your own instance if you self-host Umami.  |
 
-Command-line usage is tracked as a `command` event (with the command name) and email copies as `copy-email`.
+Besides pageviews, these Umami events are sent:
+
+| Event          | When                                                        | Data                         |
+| -------------- | ----------------------------------------------------------- | ---------------------------- |
+| `cv-open`      | A link to the CV is clicked                                 | `from` (header, menu, contact, experience, footer, 404) |
+| `cv-print`     | The CV is printed or saved as PDF (button or Cmd/Ctrl+P)    | `accent`, `photo`            |
+| `cv-photo`     | The CV photo is toggled                                     | `photo`                      |
+| `project-open` | A project link is clicked (homepage or CV)                  | `project`, `from`            |
+| `outbound`     | A GitHub, LinkedIn or email link is clicked                 | `to`, `from`                 |
+| `section`      | A homepage section is reached for the first time in a visit | `name`                       |
+| `theme`, `accent` | The theme or accent is changed                           | `theme` / `accent`, `page`   |
+| `command`      | A command-line command is run                               | `name`                       |
+| `copy-email`   | The email copy button is used                               | -                            |
+
+Links are tagged in [`src/scripts/analytics.ts`](src/scripts/analytics.ts); new links to the CV, GitHub, LinkedIn or email are picked up automatically.
 
 ## Hosting `dist/`
 

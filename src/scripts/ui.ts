@@ -13,10 +13,15 @@ function placeMarker(a: HTMLAnchorElement | undefined) {
   navMarker.style.opacity = a ? "1" : "0";
   if (a) navMarker.style.transform = `translateX(${a.offsetLeft}px) scaleX(${a.offsetWidth})`;
 }
+const reached = new Set<string>();
 function onScroll() {
   hdr?.classList.toggle("scrolled", scrollY > 20);
   let active: string | null = null;
   for (const s of sections) if (s.getBoundingClientRect().top < innerHeight * 0.4) active = s.id;
+  if (active && active !== "hero" && !reached.has(active)) {
+    reached.add(active);
+    track("section", { name: active });
+  }
   [...navLinks, ...menuLinks].forEach((a) => a.classList.toggle("active", a.dataset.section === active));
   placeMarker(navLinks.find((a) => a.dataset.section === active));
 }

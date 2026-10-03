@@ -113,7 +113,7 @@ const contact = [
                   </h3>
                   <p class="blurb">{p.blurb}</p>
                   <p class="plink">
-                    <b>{p.metric}</b> &middot; <a href={p.url}>{bare(p.url).replace("github.com/", "gh/")}</a>
+                    <b>{p.metric}</b> &middot; <a href={p.url} data-project={p.slug}>{bare(p.url).replace("github.com/", "gh/")}</a>
                   </p>
                 </div>
               ))
@@ -209,7 +209,13 @@ const contact = [
 </Base>
 
 <script>
-  import { setAccent, syncControls, type Accent } from "../scripts/palette";
+  import { root, setAccent, syncControls, track, type Accent } from "../scripts/palette";
+  import "../scripts/analytics";
+
+  // Fires for the button and for Cmd/Ctrl+P alike.
+  addEventListener("beforeprint", () =>
+    track("cv-print", { accent: root.dataset.accent ?? "lime", photo: root.classList.contains("cv-no-photo") ? "off" : "on" }),
+  );
 
   syncControls();
   document.querySelectorAll<HTMLElement>("[data-accent-swatch]").forEach((s) => s.addEventListener("click", () => setAccent(s.dataset.accentSwatch as Accent)));
@@ -228,6 +234,7 @@ const contact = [
     const off = document.documentElement.classList.toggle("cv-no-photo");
     localStorage.setItem("eb-cv-photo", off ? "off" : "on");
     syncPhoto();
+    track("cv-photo", { photo: off ? "off" : "on" });
   });
 </script>
 

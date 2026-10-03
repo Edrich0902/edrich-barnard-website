@@ -14,6 +14,7 @@ export function setTheme(t: Theme) {
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", t === "dark" ? "#0f0f0e" : "#f3f3f1");
   syncControls();
   emit();
+  track("theme", { theme: t });
 }
 
 export function setAccent(a: Accent) {
@@ -21,6 +22,7 @@ export function setAccent(a: Accent) {
   localStorage.setItem("eb-accent", a);
   syncControls();
   emit();
+  track("accent", { accent: a, page: location.pathname.startsWith("/cv") ? "cv" : "home" });
 }
 
 export function syncControls() {
