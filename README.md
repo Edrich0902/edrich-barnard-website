@@ -1,4 +1,4 @@
-# edrichbarnard.com
+# edrichbarnard.co.za
 
 Personal site for Edrich Barnard. Astro + Tailwind, fully static: `npm run prod` produces a `dist/` folder you can serve from any web server.
 
