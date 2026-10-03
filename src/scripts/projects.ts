@@ -1,5 +1,5 @@
 // Generated dot-matrix visuals for project cards without media; they animate while hovered.
-import { css } from "./palette";
+import { css, reduceMotion } from "./palette";
 
 type Field = (x: number, y: number, w: number, h: number, t: number) => number;
 
@@ -43,7 +43,8 @@ const fields: Record<string, Field> = {
   },
 };
 
-function draw(cv: HTMLCanvasElement, t: number) {
+/** `reveal` (0-1) limits drawing to a left-to-right sweep, with an accent scan edge. */
+function draw(cv: HTMLCanvasElement, t: number, reveal = 1) {
   const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio, 2);
   if (!r.width) return;
   if (cv.width !== Math.round(r.width * dpr)) { cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr); }
@@ -51,26 +52,63 @@ function draw(cv: HTMLCanvasElement, t: number) {
   const field = fields[cv.dataset.visual || "waves"];
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, w, h);
+  const front = reveal * (w + cell * 4);
   for (let y = cell / 2; y < h; y += cell) for (let x = cell / 2; x < w; x += cell) {
-    const v = field(x, y, w, h, t);
+    if (x > front) continue;
+    const edge = reveal < 1 && front - x < cell * 2;
+    const v = edge ? Math.max(0.5, field(x, y, w, h, t)) : field(x, y, w, h, t);
     if (v < 0.03) continue;
     const s = Math.max(1, v * (cell - 1.5));
-    ctx.fillStyle = v > 0.96 ? acc : fg;
-    ctx.globalAlpha = v > 0.96 ? 1 : 0.25 + v * 0.6;
+    ctx.fillStyle = edge || v > 0.96 ? acc : fg;
+    ctx.globalAlpha = edge || v > 0.96 ? 1 : 0.25 + v * 0.6;
     ctx.fillRect(x - s / 2, y - s / 2, s, s);
   }
   ctx.globalAlpha = 1;
 }
 
-const canvases = [...document.querySelectorAll<HTMLCanvasElement>("canvas[data-visual]")];
-const drawAll = () => canvases.forEach((c) => draw(c, 0));
-drawAll();
-addEventListener("resize", drawAll);
-addEventListener("palettechange", drawAll);
-canvases.forEach((cv) => {
-  const card = cv.closest(".proj");
-  let raf = 0, t0 = 0;
-  const loop = (now: number) => { draw(cv, (now - t0) / 1000); raf = requestAnimationFrame(loop); };
-  card?.addEventListener("mouseenter", () => { t0 = performance.now(); raf = requestAnimationFrame(loop); });
-  card?.addEventListener("mouseleave", () => { cancelAnimationFrame(raf); draw(cv, 0); });
+const BOOT_MS = 1600;
+const SWEEP_MS = 750;
+const ease = (k: number) => 1 - Math.pow(1 - k, 3);
+
+const cards = [...document.querySelectorAll<HTMLCanvasElement>("canvas[data-visual]")].map((cv) => ({
+  cv,
+  t: 0,
+  reveal: reduceMotion ? 1 : 0,
+  raf: 0,
+}));
+const redraw = () => cards.forEach((c) => draw(c.cv, c.t, c.reveal));
+redraw();
+addEventListener("resize", redraw);
+addEventListener("palettechange", redraw);
+
+/** Animates from the card's current frame; `until` stops it after a duration (the one-off boot). */
+function run(c: (typeof cards)[number], until?: number) {
+  cancelAnimationFrame(c.raf);
+  const start = performance.now(), from = c.t;
+  const loop = (now: number) => {
+    const ms = now - start;
+    c.t = from + ms / 1000;
+    if (c.reveal < 1) c.reveal = ease(Math.min(1, ms / SWEEP_MS));
+    draw(c.cv, c.t, c.reveal);
+    if (until === undefined || ms < until) c.raf = requestAnimationFrame(loop);
+  };
+  c.raf = requestAnimationFrame(loop);
+}
+
+const io = new IntersectionObserver(
+  (entries) =>
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const c = cards.find((c) => c.cv === e.target);
+      if (c) run(c, BOOT_MS);
+      io.unobserve(e.target);
+    }),
+  { threshold: 0.35 },
+);
+
+cards.forEach((c) => {
+  if (!reduceMotion) io.observe(c.cv);
+  const card = c.cv.closest(".proj");
+  card?.addEventListener("mouseenter", () => run(c));
+  card?.addEventListener("mouseleave", () => (c.reveal < 1 ? run(c, SWEEP_MS) : cancelAnimationFrame(c.raf)));
 });

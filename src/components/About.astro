@@ -29,7 +29,7 @@ const facts = [
       <div class="reveal col-span-12 min-[900px]:col-span-6 min-[900px]:col-start-7">
         <p class="mb-[18px] max-w-[34em] text-[clamp(22px,2vw,26px)] leading-[1.4] tracking-[-0.015em]">{site.intro}</p>
         {site.about.map((p) => <p class="mb-[18px] max-w-[34em] text-[17px] text-muted">{p}</p>)}
-        <dl class="mt-9 border-t border-line">
+        <dl class="mt-9 border-t border-line" data-stagger>
           {
             facts.map(([k, v]) => (
               <div class="grid grid-cols-[110px_1fr] border-b border-line py-[11px] text-sm sm:grid-cols-[120px_1fr]">

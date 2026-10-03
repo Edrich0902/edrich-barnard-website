@@ -55,7 +55,7 @@
   :focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   }
 }
 
@@ -80,7 +80,16 @@
   .btn-solid { @apply border-fg bg-fg text-bg hover:border-accent hover:bg-accent; }
 
   .sec { @apply scroll-mt-[50px] pt-[130px] pb-5; }
-  .sec-head { @apply mb-14 grid grid-cols-12 items-baseline gap-6 border-t border-line pt-4; }
+  .sec-head { @apply relative mb-14 grid grid-cols-12 items-baseline gap-6 pt-4; }
+  .sec-head::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line);
+    transform-origin: left;
+    transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+  }
   .sec-head .n { @apply col-span-2 font-mono text-[13px] text-accent sm:col-span-1; }
   .sec-head h2 { @apply col-span-10 text-[clamp(30px,3.4vw,44px)] leading-[1.1] font-medium tracking-[-0.03em] sm:col-span-8; }
   .sec-head .file { @apply col-span-3 hidden text-right font-mono text-xs text-faint sm:block; }
@@ -89,6 +98,36 @@
 
   .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.8s ease, transform 0.8s ease; }
   .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
-  .no-js .reveal { opacity: 1; transform: none; }
+
+  /* Children arrive one after another; motion.ts sets --si (capped) on each child. */
+  [data-stagger] > * {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: calc(var(--si, 0) * 55ms);
+  }
+  [data-stagger].in > * { opacity: 1; transform: none; }
+
+  .sec-head:not(.in)::before { transform: scaleX(0); }
+
+  /* Zero-width caret, so typing into right-aligned labels doesn't shift them. */
+  .caret-z { position: relative; display: inline-block; width: 0; }
+  .caret-z::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: -0.95em;
+    width: 0.55em;
+    height: 1.15em;
+    background: var(--accent);
+    animation: caret-blink 0.55s linear infinite;
+  }
+  @keyframes caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, [data-stagger] > * { opacity: 1; transform: none; }
+    .sec-head:not(.in)::before { transform: none; }
+  }
+  .no-js .reveal, .no-js [data-stagger] > * { opacity: 1; transform: none; }
+  .no-js .sec-head::before { transform: none; }
 }

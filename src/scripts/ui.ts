@@ -5,28 +5,32 @@ const data = siteData();
 /* header + active nav */
 const hdr = document.getElementById("hdr");
 const navLinks = [...document.querySelectorAll<HTMLAnchorElement>("#nav a")];
+const navMarker = document.getElementById("navMarker");
 const sections = [...document.querySelectorAll<HTMLElement>("main section[id]")];
+function placeMarker(a: HTMLAnchorElement | undefined) {
+  if (!navMarker) return;
+  navMarker.style.opacity = a ? "1" : "0";
+  if (a) navMarker.style.transform = `translateX(${a.offsetLeft}px) scaleX(${a.offsetWidth})`;
+}
 function onScroll() {
   hdr?.classList.toggle("scrolled", scrollY > 20);
   let active: string | null = null;
   for (const s of sections) if (s.getBoundingClientRect().top < innerHeight * 0.4) active = s.id;
   navLinks.forEach((a) => a.classList.toggle("active", a.dataset.section === active));
+  placeMarker(navLinks.find((a) => a.dataset.section === active));
 }
 addEventListener("scroll", onScroll, { passive: true });
+addEventListener("resize", onScroll);
 onScroll();
-
-/* reveal on scroll */
-const io = new IntersectionObserver(
-  (entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }),
-  { threshold: 0.12 },
-);
-document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 /* clocks in Edrich's timezone, whoever is visiting */
 const clocks = [...document.querySelectorAll<HTMLElement>("[data-clock]")];
 const tick = () => {
   const t = new Date().toLocaleTimeString("en-GB", { hour12: false, timeZone: data.tz });
-  clocks.forEach((c) => (c.textContent = c.dataset.clock === "short" ? t.slice(0, 5) : t));
+  clocks.forEach((c) => {
+    if (c.dataset.clock === "short") c.innerHTML = `${t.slice(0, 2)}<span class="tick">:</span>${t.slice(3, 5)}`;
+    else c.textContent = t;
+  });
 };
 tick();
 setInterval(tick, 1000);
@@ -39,7 +43,7 @@ export function copyEmail() {
 document.querySelectorAll<HTMLButtonElement>("[data-copy-email]").forEach((b) =>
   b.addEventListener("click", () => {
     copyEmail();
-    b.textContent = "copied";
+    b.innerHTML = `<span class="text-accent">&check;</span> copied`;
     setTimeout(() => (b.textContent = "copy"), 1600);
   }),
 );

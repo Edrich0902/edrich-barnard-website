@@ -15,19 +15,21 @@ const links = [
       <div class="reveal col-span-12 min-[900px]:col-span-7">
         <p class="max-w-[30em] text-[17px] text-muted">For freelance projects, collaborations or just to talk shop. Email is best &mdash; I reply within a day.</p>
         <div class="mt-[34px] flex flex-wrap items-center gap-3.5">
-          <a class="ulink text-[clamp(26px,3.6vw,48px)] font-medium tracking-[-0.03em] break-all" href={`mailto:${site.email}`}>{site.email}</a>
+          <a class="ulink text-[clamp(26px,3.6vw,48px)] font-medium tracking-[-0.03em] break-all" href={`mailto:${site.email}`} data-decode-email>{site.email}</a>
           <button class="hbtn" type="button" data-copy-email>copy</button>
         </div>
-        <div class="mt-11 max-w-[520px] border-t border-line">
+        <div class="mt-11 max-w-[520px] border-t border-line" data-stagger>
           {
             links.map(([label, href, action]) => (
               <a
-                class="group flex justify-between border-b border-line py-3 text-[15px] transition-[padding] duration-200 hover:pl-2"
+                class="group flex justify-between border-b border-line py-3 text-[15px]"
                 href={href}
                 {...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
               >
-                <span>{label}</span>
-                <span class="font-mono text-xs text-faint group-hover:text-accent">{action} &nearr;</span>
+                <span class="transition-[padding] duration-200 group-hover:pl-2">{label}</span>
+                <span class="font-mono text-xs text-faint group-hover:text-accent">
+                  {action} <span class="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">&nearr;</span>
+                </span>
               </a>
             ))
           }

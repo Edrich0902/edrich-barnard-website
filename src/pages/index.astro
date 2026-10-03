@@ -37,11 +37,13 @@ const clientData = {
 </Base>
 
 <script>
+  import "../scripts/hero";
   import "../scripts/ui";
+  import "../scripts/motion";
   import "../scripts/command";
   import "../scripts/dither";
   import "../scripts/projects";
-  import "../scripts/contributions";
+  import "../scripts/graph";
 
   // three.js is the heaviest dependency; keep it off the critical path
   const loadStage = () => import("../scripts/stage");

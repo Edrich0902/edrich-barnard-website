@@ -15,7 +15,11 @@ const nav = [
     <a href="/#hero" class="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
       <i class="block size-2.5 bg-accent"></i>{site.name}
     </a>
-    <nav id="nav" class="mx-auto hidden gap-[26px] text-sm min-[900px]:flex" aria-label="Sections">
+    <nav id="nav" class="relative mx-auto hidden gap-[26px] text-sm min-[900px]:flex" aria-label="Sections">
+      <span
+        id="navMarker"
+        class="pointer-events-none absolute -bottom-2 left-0 h-px w-px origin-left bg-accent opacity-0 transition-[transform,opacity] duration-500 ease-[cubic-bezier(.2,.8,.2,1)]"
+        aria-hidden="true"></span>
       {
         nav.map(([id, label], i) => (
           <a href={`/#${id}`} data-section={id} class="group text-muted transition-colors hover:text-fg [&.active]:text-fg">

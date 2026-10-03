@@ -8,7 +8,7 @@ import { site, projects } from "../data/site";
     <div class="grid gap-6 min-[860px]:grid-cols-2">
       {
         projects.map((p, i) => (
-          <a class="proj group reveal flex flex-col border border-line bg-bg transition-colors hover:border-line-strong" href={p.url} target="_blank" rel="noreferrer">
+          <a class="proj group reveal flex flex-col border border-line bg-bg hover:border-line-strong" href={p.url} target="_blank" rel="noreferrer">
             <div class="flex justify-between gap-3 border-b border-line px-3.5 py-2.5 font-mono text-xs text-faint">
               <span>{String(i + 1).padStart(2, "0")}</span>
               <span class="truncate text-muted transition-colors group-hover:text-accent">{p.slug}/</span>
@@ -29,7 +29,7 @@ import { site, projects } from "../data/site";
             <div class="flex flex-1 flex-col px-[18px] pt-5 pb-[18px]">
               <div class="flex items-baseline justify-between gap-3">
                 <h3 class="text-[22px] font-medium tracking-[-0.02em]">{p.title}</h3>
-                <span class="font-mono text-[13px] text-faint transition-[transform,color] duration-200 group-hover:translate-x-1 group-hover:text-fg">&nearr;</span>
+                <span class="font-mono text-[13px] text-faint transition-[transform,color] duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg">&nearr;</span>
               </div>
               <p class="mt-2 flex-1 text-[15px] text-muted">{p.blurb}</p>
               <div class="mt-[18px] flex justify-between gap-4 border-t border-dashed border-line pt-3 font-mono text-[11.5px] text-faint">
@@ -42,7 +42,15 @@ import { site, projects } from "../data/site";
       }
     </div>
     <p class="reveal mt-[22px] text-right font-mono text-[12.5px] text-muted">
-      <a class="ulink hover:text-accent" href={site.links.github} target="_blank" rel="noreferrer">all repositories on github.com/{site.handle} &nearr;</a>
+      <a class="ulink group hover:text-accent" href={site.links.github} target="_blank" rel="noreferrer"
+        >all repositories on github.com/{site.handle} <span class="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">&nearr;</span></a
+      >
     </p>
   </div>
 </section>
+
+<style>
+  /* Keeps the reveal fade alongside the hover border; the right-hand column trails slightly. */
+  .proj { transition: opacity 0.8s ease, transform 0.8s ease, border-color 0.2s; }
+  .proj:nth-child(even) { transition-delay: 0.12s, 0.12s, 0s; }
+</style>
