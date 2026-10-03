@@ -10,6 +10,8 @@ const { SITE_URL } = loadEnv(mode, process.cwd(), "");
 export default defineConfig({
   site: SITE_URL || "http://localhost:4321",
   output: "static",
+  // dist/ is its own git repo (the deploy target); each mode builds into a subfolder so dist/.git survives.
+  outDir: mode === "production" ? "./dist/prod" : "./dist/dev",
   vite: {
     plugins: [tailwindcss()],
     // three.js (lazy-loaded for the particle stage) is a single ~520 kB chunk on its own

@@ -1,6 +1,6 @@
 # edrichbarnard.co.za
 
-Personal site for Edrich Barnard. Astro + Tailwind, fully static: `npm run prod` produces a `dist/` folder you can serve from any web server.
+Personal site for Edrich Barnard. Astro + Tailwind, fully static: `npm run prod` produces `dist/prod/`, which you can serve from any web server.
 
 ## Setup
 
@@ -13,9 +13,9 @@ npm run watch                       # http://localhost:4321
 | Script            | What it does                                                        |
 | ----------------- | ------------------------------------------------------------------- |
 | `npm run watch`   | Live dev server; changes show up in the browser immediately          |
-| `npm run dev`     | Development build into `dist/`, using `.env.development`             |
-| `npm run prod`    | Production build into `dist/`, using `.env.production` - this is what you host |
-| `npm run preview` | Serve whatever is currently in `dist/` at http://localhost:4321      |
+| `npm run dev`     | Development build into `dist/dev/`, using `.env.development`         |
+| `npm run prod`    | Production build into `dist/prod/`, using `.env.production` - this is what you host |
+| `npm run preview` | Serve the production build in `dist/prod/` at http://localhost:4321  |
 | `npm run check`   | Type-check `.astro` and `.ts` files                                  |
 
 Non-production builds add a `noindex` tag and a `robots.txt` that disallows everything, so a test deploy never ends up in search results. Production builds generate `robots.txt` and `sitemap.xml` pointing at `SITE_URL`.
@@ -52,12 +52,23 @@ Besides pageviews, these Umami events are sent:
 
 Links are tagged in [`src/scripts/analytics.ts`](src/scripts/analytics.ts); new links to the CV, GitHub, LinkedIn or email are picked up automatically.
 
-## Hosting `dist/`
+## Deploying
+
+`dist/` is its own git repository ([edrich-barnard-website-dist](https://github.com/Edrich0902/edrich-barnard-website-dist)), ignored by this one. Production builds go to `dist/prod/` and are committed there; `dist/dev/` is ignored. To release:
+
+```sh
+npm run prod
+cd dist && git add -A && git commit -m "Production build" && git push
+```
+
+On the server, clone the dist repo once and `git pull` to update. Serve `prod/`.
+
+After a fresh clone of this repo, set `dist/` up again with `git clone git@github.com:Edrich0902/edrich-barnard-website-dist.git dist`.
 
 Everything is pre-rendered: `/index.html`, `/cv/index.html` and `/404.html`. Configure the server to use `404.html` for missing pages, e.g. for nginx:
 
 ```nginx
-root /var/www/edrichbarnard/dist;
+root /var/www/edrich-barnard-website-dist/prod;
 error_page 404 /404.html;
 location /_astro/ { expires 1y; add_header Cache-Control "public, immutable"; }
 ```
