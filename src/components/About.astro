@@ -1,0 +1,46 @@
+---
+import { site, experience, education } from "../data/site";
+import Stack from "./Stack.astro";
+
+const years = new Date().getFullYear() - site.since;
+const facts = [
+  ["role", `${experience[0].role}, ${experience[0].company}`],
+  ["experience", `Since ${site.since} - ${years}+ years in production`],
+  ["industries", site.industries.join(", ")],
+  ["education", `${education[0].title}, ${education[0].note.toLowerCase()}`],
+  ["based", `${site.location} (${site.timezone})`],
+  ["speaks", site.languages.join(", ")],
+];
+---
+
+<section class="sec" id="about" data-shape="field">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">01</span><h2>About</h2><span class="file">about.md</span></div>
+    <div class="grid-12">
+      <div class="reveal col-span-12 mb-10 max-w-[420px] min-[900px]:col-span-5 min-[900px]:mb-0 min-[900px]:max-w-none">
+        <div id="dither" class="relative aspect-[4/5] cursor-crosshair overflow-hidden border border-line bg-surface">
+          <canvas id="ditherCanvas" class="absolute inset-0 block size-full" role="img" aria-label={`Portrait of ${site.name}`}></canvas>
+          <noscript><img src="/images/edrich-about.png" alt={`Portrait of ${site.name}`} class="absolute inset-0 size-full object-cover" /></noscript>
+        </div>
+        <div class="mt-2.5 flex justify-between font-mono text-[11.5px] text-faint">
+          <span id="ditherCap">fig. 02 &mdash; 1-bit ordered dither</span><span id="ditherHint">hover to resolve</span>
+        </div>
+      </div>
+      <div class="reveal col-span-12 min-[900px]:col-span-6 min-[900px]:col-start-7">
+        <p class="mb-[18px] max-w-[34em] text-[clamp(22px,2vw,26px)] leading-[1.4] tracking-[-0.015em]">{site.intro}</p>
+        {site.about.map((p) => <p class="mb-[18px] max-w-[34em] text-[17px] text-muted">{p}</p>)}
+        <dl class="mt-9 border-t border-line">
+          {
+            facts.map(([k, v]) => (
+              <div class="grid grid-cols-[110px_1fr] border-b border-line py-[11px] text-sm sm:grid-cols-[120px_1fr]">
+                <dt class="pt-0.5 font-mono text-xs text-faint">{k}</dt>
+                <dd>{v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <Stack />
+      </div>
+    </div>
+  </div>
+</section>

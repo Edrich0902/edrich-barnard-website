@@ -1,0 +1,58 @@
+---
+const accents = [
+  ["lime", "#c8f031", "Lime"],
+  ["orange", "#ff6a2b", "Orange"],
+  ["blue", "#6b8cff", "Blue"],
+  ["mono", "linear-gradient(135deg,#e9e7e2 50%,#131312 50%)", "Monochrome"],
+];
+---
+
+<div
+  id="dock"
+  class="fixed right-5 bottom-[18px] z-30 flex items-center gap-2 rounded-[2px] border border-line bg-bg py-1.5 pr-2 pl-2.5 font-mono text-[11.5px] text-faint transition-opacity duration-300 [&.hide]:pointer-events-none [&.hide]:opacity-0"
+>
+  <span>accent</span>
+  {
+    accents.map(([id, bg, label]) => (
+      <button
+        type="button"
+        class="size-3.5 cursor-pointer border border-line-strong p-0 [&.on]:outline [&.on]:outline-1 [&.on]:outline-offset-2 [&.on]:outline-fg"
+        style={`background:${bg}`}
+        data-accent-swatch={id}
+        aria-label={`${label} accent`}
+      />
+    ))
+  }
+</div>
+
+<div
+  id="cmd"
+  role="dialog"
+  aria-label="Command line"
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-line-strong bg-bg font-mono transition-transform duration-300 ease-[cubic-bezier(.2,.8,.2,1)] [&.open]:translate-y-0"
+>
+  <div class="wrap pt-2 pb-3.5">
+    <div id="cmdOut" class="max-h-[260px] overflow-y-auto text-[13px] text-muted" aria-live="polite"></div>
+    <div class="mt-2 flex items-center gap-2.5 border-t border-line pt-3 text-sm">
+      <label for="cmdInput" class="whitespace-nowrap text-accent">~/edrich $</label>
+      <input
+        id="cmdInput"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="type a command - try help"
+        class="min-w-0 flex-1 border-0 bg-transparent text-fg caret-accent outline-none placeholder:text-faint"
+      />
+      <span class="hidden text-[11.5px] text-faint sm:inline">esc to close</span>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  #cmdOut .o { padding: 3px 0; }
+  #cmdOut .o b { color: var(--accent); font-weight: 400; }
+  #cmdOut .sugg { display: grid; grid-template-columns: 200px 1fr; padding: 4px 8px; margin: 0 -8px; cursor: pointer; }
+  #cmdOut .sugg span:first-child { color: var(--fg); }
+  #cmdOut .sugg.sel { background: var(--surface); }
+  #cmdOut .sugg.sel span:first-child::before { content: "> "; color: var(--accent); }
+  @media (max-width: 600px) { #cmdOut .sugg { grid-template-columns: 1fr; } #cmdOut .sugg span:last-child { display: none; } }
+</style>

@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Work from "../components/Work.astro";
+import Experience from "../components/Experience.astro";
+import Currently from "../components/Currently.astro";
+import Contact from "../components/Contact.astro";
+import Footer from "../components/Footer.astro";
+import CommandLine from "../components/CommandLine.astro";
+import { site, projects } from "../data/site";
+
+const clientData = {
+  email: site.email,
+  tz: site.tz,
+  links: site.links,
+  projects: projects.map(({ slug, title, url }) => ({ slug, title, url })),
+};
+---
+
+<Base>
+  <canvas id="stage" class="pointer-events-none fixed inset-0 z-0 h-screen w-screen" aria-hidden="true"></canvas>
+  <a href="#about" class="sr-only z-50 bg-accent px-3 py-2 font-mono text-sm text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
+  <Header />
+  <main class="relative z-[1]">
+    <Hero />
+    <About />
+    <Work />
+    <Experience />
+    <Currently />
+    <Contact />
+  </main>
+  <Footer />
+  <CommandLine />
+  <script type="application/json" id="site-data" set:html={JSON.stringify(clientData)} />
+</Base>
+
+<script>
+  import "../scripts/ui";
+  import "../scripts/command";
+  import "../scripts/dither";
+  import "../scripts/projects";
+  import "../scripts/contributions";
+
+  // three.js is the heaviest dependency; keep it off the critical path
+  const loadStage = () => import("../scripts/stage");
+  "requestIdleCallback" in window ? requestIdleCallback(loadStage, { timeout: 1200 }) : setTimeout(loadStage, 200);
+</script>

@@ -1,0 +1,48 @@
+---
+import { site, projects } from "../data/site";
+---
+
+<section class="sec" id="work" data-shape="wave">
+  <div class="wrap">
+    <div class="sec-head"><span class="n">02</span><h2>Selected work</h2><span class="file">~/projects</span></div>
+    <div class="grid gap-6 min-[860px]:grid-cols-2">
+      {
+        projects.map((p, i) => (
+          <a class="proj group reveal flex flex-col border border-line bg-bg transition-colors hover:border-line-strong" href={p.url} target="_blank" rel="noreferrer">
+            <div class="flex justify-between gap-3 border-b border-line px-3.5 py-2.5 font-mono text-xs text-faint">
+              <span>{String(i + 1).padStart(2, "0")}</span>
+              <span class="truncate text-muted transition-colors group-hover:text-accent">{p.slug}/</span>
+              <span>{p.year}</span>
+            </div>
+            <div class="relative aspect-[16/8] overflow-hidden border-b border-line bg-surface">
+              {p.media?.length ? (
+                <img
+                  src={p.media[0].src}
+                  alt={p.media[0].alt}
+                  loading="lazy"
+                  class="absolute inset-0 size-full object-cover grayscale transition-[filter,transform] duration-500 group-hover:scale-[1.02] group-hover:grayscale-0"
+                />
+              ) : (
+                <canvas class="absolute inset-0 size-full" data-visual={p.visual} aria-hidden="true" />
+              )}
+            </div>
+            <div class="flex flex-1 flex-col px-[18px] pt-5 pb-[18px]">
+              <div class="flex items-baseline justify-between gap-3">
+                <h3 class="text-[22px] font-medium tracking-[-0.02em]">{p.title}</h3>
+                <span class="font-mono text-[13px] text-faint transition-[transform,color] duration-200 group-hover:translate-x-1 group-hover:text-fg">&nearr;</span>
+              </div>
+              <p class="mt-2 flex-1 text-[15px] text-muted">{p.blurb}</p>
+              <div class="mt-[18px] flex justify-between gap-4 border-t border-dashed border-line pt-3 font-mono text-[11.5px] text-faint">
+                <span>{p.kind.toLowerCase()} &middot; {p.tags.join(", ").toLowerCase()}</span>
+                <span class="shrink-0 text-right text-fg">{p.metric}</span>
+              </div>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+    <p class="reveal mt-[22px] text-right font-mono text-[12.5px] text-muted">
+      <a class="ulink hover:text-accent" href={site.links.github} target="_blank" rel="noreferrer">all repositories on github.com/{site.handle} &nearr;</a>
+    </p>
+  </div>
+</section>

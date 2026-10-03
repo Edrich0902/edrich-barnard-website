@@ -1,0 +1,34 @@
+---
+import { site } from "../data/site";
+
+const nav = [
+  ["about", "About"],
+  ["work", "Work"],
+  ["experience", "Experience"],
+  ["currently", "Currently"],
+  ["contact", "Contact"],
+];
+---
+
+<header id="hdr" class="fixed inset-x-0 top-0 z-20 border-b border-transparent bg-bg/90 backdrop-blur-sm transition-colors duration-300 [&.scrolled]:border-line">
+  <div class="wrap flex h-[60px] items-center gap-8">
+    <a href="/#hero" class="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
+      <i class="block size-2.5 bg-accent"></i>{site.name}
+    </a>
+    <nav id="nav" class="mx-auto hidden gap-[26px] text-sm min-[900px]:flex" aria-label="Sections">
+      {
+        nav.map(([id, label], i) => (
+          <a href={`/#${id}`} data-section={id} class="group text-muted transition-colors hover:text-fg [&.active]:text-fg">
+            <span class="mr-1.5 font-mono text-[11px] text-faint group-[.active]:text-accent">{String(i + 1).padStart(2, "0")}</span>
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="ml-auto flex gap-2 min-[900px]:ml-0">
+      <a class="hbtn hidden sm:inline-block" href="/cv">cv</a>
+      <button class="hbtn" id="cmdBtn" type="button" aria-label="Open command line"><kbd>/</kbd> command</button>
+      <button class="hbtn" id="themeBtn" type="button" aria-label="Toggle colour theme">theme</button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,34 @@
+---
+import { site } from "../data/site";
+---
+
+<section id="hero" data-shape="portrait" class="relative flex min-h-screen flex-col justify-center pt-[110px] pb-10">
+  <div class="wrap">
+    <p class="mb-7 font-mono text-[12.5px] text-faint">~/<b class="font-normal text-muted">edrich-barnard</b> &mdash; index</p>
+    <h1 class="text-[clamp(52px,8vw,116px)] leading-[0.92] font-medium tracking-[-0.045em]">{site.name}</h1>
+    <p class="mt-7 max-w-[30em] text-[clamp(18px,1.6vw,21px)] leading-normal text-muted">
+      <strong class="font-medium text-fg">Full-stack software engineer.</strong>
+      {site.lede}
+    </p>
+    <dl class="mt-11 flex max-w-[640px] border-y border-line font-mono text-[12.5px]">
+      <div class="flex-1 py-3">
+        <dt class="label mb-0.5">Based</dt>
+        <dd>{site.location}</dd>
+      </div>
+      <div class="flex-1 border-l border-line py-3 pl-[18px]">
+        <dt class="label mb-0.5">Local time</dt>
+        <dd data-clock="short">--:--</dd>
+      </div>
+    </dl>
+    <div class="mt-9 flex flex-wrap items-center gap-2.5">
+      <a class="btn btn-solid group" href="#work">Selected work <span class="transition-transform group-hover:translate-y-0.5">&darr;</span></a>
+      <a class="btn" href={`mailto:${site.email}`}>Email</a>
+      <button type="button" class="ml-2 cursor-pointer font-mono text-[12.5px] text-faint" data-open-cmd>
+        or press <kbd class="rounded-[2px] border border-line px-1.5 py-px text-muted">/</kbd>
+      </button>
+    </div>
+  </div>
+  <p class="absolute right-8 bottom-[72px] z-[1] hidden text-right font-mono text-[11.5px] text-faint min-[900px]:block">
+    fig. 01 &mdash; <b class="font-normal text-muted">7,000 points</b>, sampled from portrait<br />move your cursor through it
+  </p>
+</section>

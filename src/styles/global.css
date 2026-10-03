@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Palette lives in plain custom properties so theme + accent can switch at runtime. */
+:root,
+[data-theme="dark"] {
+  --bg: #0f0f0e;
+  --surface: #161615;
+  --line: #272725;
+  --line-strong: #3a3a37;
+  --fg: #e9e7e2;
+  --muted: #8e8c86;
+  --faint: #77756f;
+}
+[data-theme="light"] {
+  --bg: #f3f3f1;
+  --surface: #e9e9e6;
+  --line: #d8d8d4;
+  --line-strong: #bdbdb8;
+  --fg: #131312;
+  --muted: #5d5c57;
+  --faint: #7a7973;
+}
+[data-accent="lime"] { --accent: #c8f031; }
+[data-theme="light"][data-accent="lime"] { --accent: #4f7000; }
+[data-accent="orange"] { --accent: #ff6a2b; }
+[data-theme="light"][data-accent="orange"] { --accent: #d4470c; }
+[data-accent="blue"] { --accent: #6b8cff; }
+[data-theme="light"][data-accent="blue"] { --accent: #2349d8; }
+[data-accent="mono"] { --accent: var(--fg); }
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-size: 16px;
+    line-height: 1.6;
+    transition: background-color 0.4s, color 0.4s;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  :focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-[1240px] px-5 sm:px-8; }
+  .grid-12 { @apply grid grid-cols-12 gap-x-6; }
+
+  .ulink {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.35s ease;
+  }
+  .ulink:hover { background-size: 100% 1px; }
+
+  .hbtn {
+    @apply cursor-pointer rounded-[2px] border border-line bg-transparent px-2.5 py-[5px] font-mono text-xs text-muted transition-colors hover:border-line-strong hover:text-fg;
+  }
+  .hbtn kbd { font: inherit; @apply text-fg; }
+
+  .btn {
+    @apply inline-flex h-11 cursor-pointer items-center gap-2.5 rounded-[2px] border border-line-strong px-[18px] text-[14.5px] font-medium text-fg transition-colors hover:border-fg;
+  }
+  .btn-solid { @apply border-fg bg-fg text-bg hover:border-accent hover:bg-accent; }
+
+  .sec { @apply scroll-mt-[50px] pt-[130px] pb-5; }
+  .sec-head { @apply mb-14 grid grid-cols-12 items-baseline gap-6 border-t border-line pt-4; }
+  .sec-head .n { @apply col-span-2 font-mono text-[13px] text-accent sm:col-span-1; }
+  .sec-head h2 { @apply col-span-10 text-[clamp(30px,3.4vw,44px)] leading-[1.1] font-medium tracking-[-0.03em] sm:col-span-8; }
+  .sec-head .file { @apply col-span-3 hidden text-right font-mono text-xs text-faint sm:block; }
+
+  .label { @apply font-mono text-[10.5px] tracking-[0.08em] text-faint uppercase; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+  .no-js .reveal { opacity: 1; transform: none; }
+}

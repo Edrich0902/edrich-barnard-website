@@ -1,0 +1,14 @@
+---
+import { site } from "../data/site";
+
+const built = new Date().toISOString().slice(0, 10);
+---
+
+<footer class="relative z-[1] pt-7 pb-[90px]">
+  <div class="wrap">
+    <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-[18px] font-mono text-xs text-faint">
+      <span>&copy; {new Date().getFullYear()} {site.name}</span>
+      <span>Built with Astro. Last updated {built}.</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,185 @@
+---
+import Base from "../layouts/Base.astro";
+import { site, experience, projects, stack, education, awards } from "../data/site";
+
+const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
+const siteUrl = Astro.site && !Astro.site.hostname.includes("localhost") ? Astro.site.toString() : null;
+const skills = stack.map((g) => ({ group: g.group, items: g.items.map((i) => i.name).join(", ") }));
+---
+
+<Base title={`${site.name} - CV`} description={`Curriculum vitae of ${site.name}, ${site.role.toLowerCase()} based in ${site.location}.`} bodyClass="cv-body">
+  <div class="cv-bar wrap flex items-center justify-between gap-4 py-5 font-mono text-[12.5px] text-muted">
+    <a href="/" class="ulink">&larr; edrichbarnard</a>
+    <div class="flex items-center gap-2">
+      <span class="hidden text-faint sm:inline">A4 &middot; prints to PDF</span>
+      <button type="button" class="hbtn" data-print>print / save as PDF</button>
+    </div>
+  </div>
+
+  <article class="sheet">
+    <header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b-2 border-current pb-5">
+      <div>
+        <h1 class="text-[34px] leading-none font-semibold tracking-[-0.025em]">{site.name}</h1>
+        <p class="mt-2 text-[15px] font-medium text-[var(--ink-2)]">{site.role}</p>
+      </div>
+      <ul class="contact text-right font-mono text-[11px] leading-[1.7] text-[var(--ink-2)]">
+        <li>{site.location}</li>
+        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+        <li><a href={site.links.linkedin}>{bare(site.links.linkedin)}</a></li>
+        <li><a href={site.links.github}>{bare(site.links.github)}</a></li>
+        {siteUrl && <li><a href={siteUrl}>{bare(siteUrl)}</a></li>}
+      </ul>
+    </header>
+
+    <section>
+      <h2>Profile</h2>
+      <p class="text-[var(--ink-2)]">{site.profile}</p>
+    </section>
+
+    <section>
+      <h2>Experience</h2>
+      {
+        experience.map((r) => (
+          <div class="entry">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+              <h3>
+                {r.role} <span class="font-normal text-[var(--ink-2)]">&middot; {r.company}</span>
+              </h3>
+              <span class="meta">{r.period}</span>
+            </div>
+            <p class="meta mt-0.5">{r.where}</p>
+            <ul class="bullets">
+              {r.details.map((d) => (
+                <li>{d}</li>
+              ))}
+            </ul>
+            {r.tags.length > 0 && <p class="meta mt-1.5">{r.tags.join(" / ")}</p>}
+          </div>
+        ))
+      }
+    </section>
+
+    <section>
+      <h2>Selected projects</h2>
+      <div class="grid gap-x-8 gap-y-3 sm:grid-cols-2 print:grid-cols-2">
+        {
+          projects.map((p) => (
+            <div class="entry !mt-0">
+              <h3>
+                {p.title} <span class="font-normal text-[var(--ink-2)]">&middot; {p.kind}</span>
+              </h3>
+              <p class="mt-0.5 text-[12.5px] leading-[1.5] text-[var(--ink-2)]">{p.blurb}</p>
+              <p class="meta mt-1">{p.tags.join(" / ")} &middot; <a href={p.url}>{bare(p.url).replace("github.com/", "gh/")}</a></p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section>
+      <h2>Skills</h2>
+      <dl class="grid grid-cols-[130px_1fr] gap-x-4 gap-y-1.5 text-[12.5px]">
+        {
+          skills.map((s) => (
+            <>
+              <dt class="font-medium">{s.group}</dt>
+              <dd class="text-[var(--ink-2)]">{s.items}</dd>
+            </>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="grid gap-x-8 sm:grid-cols-[1.6fr_1fr] print:grid-cols-[1.6fr_1fr]">
+      <div>
+        <h2>Education</h2>
+        {
+          education.map((e) => (
+            <div class="entry">
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
+                <h3>{e.title}</h3>
+                <span class="meta">{e.period}</span>
+              </div>
+              <p class="mt-0.5 text-[12.5px] text-[var(--ink-2)]">
+                {e.school}, {e.where}
+              </p>
+              <p class="meta mt-0.5">{e.note}</p>
+            </div>
+          ))
+        }
+      </div>
+      <div>
+        <h2>Languages</h2>
+        <p class="text-[12.5px] text-[var(--ink-2)]">{site.languages.join(", ")}</p>
+        <h2 class="!mt-5">Awards</h2>
+        <ul class="text-[12.5px] text-[var(--ink-2)]">
+          {
+            awards.map((a) => (
+              <li>
+                {a.title} <span class="meta">&middot; {a.year}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+  </article>
+
+  <p class="cv-bar wrap py-8 text-center font-mono text-xs text-faint">Generated from the same data as the website.</p>
+</Base>
+
+<script>
+  document.querySelector("[data-print]")?.addEventListener("click", () => print());
+</script>
+
+<style is:global>
+  .cv-body { background: var(--bg); }
+  .sheet {
+    --paper: #ffffff;
+    --ink: #151514;
+    --ink-2: #4a4945;
+    --ink-3: #6f6e69;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 16mm 16mm 14mm;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.55;
+    box-shadow: 0 0 0 1px var(--line), 0 20px 60px -30px rgb(0 0 0 / 0.5);
+  }
+  .sheet a { color: inherit; text-decoration: none; }
+  .sheet a:hover { text-decoration: underline; }
+  .sheet section { margin-top: 20px; }
+  .sheet h2 {
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .sheet h3 { font-size: 13.5px; font-weight: 600; }
+  .sheet .entry + .entry { margin-top: 14px; }
+  .sheet .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); }
+  .sheet .bullets { margin-top: 6px; }
+  .sheet .bullets li { position: relative; padding-left: 14px; font-size: 12.5px; color: var(--ink-2); }
+  .sheet .bullets li + li { margin-top: 3px; }
+  .sheet .bullets li::before { content: ""; position: absolute; left: 1px; top: 0.62em; width: 5px; height: 5px; background: var(--ink); }
+  .sheet section, .sheet .entry { break-inside: avoid-page; }
+  .sheet section:has(.entry + .entry) { break-inside: auto; }
+
+  @media (max-width: 640px) {
+    .sheet { padding: 28px 20px; box-shadow: none; }
+    .sheet .contact { text-align: left; }
+  }
+
+  @page { size: A4; margin: 12mm 14mm; }
+  @media print {
+    html, body.cv-body { background: #fff !important; }
+    .cv-bar { display: none !important; }
+    .sheet { max-width: none; padding: 0; box-shadow: none; font-size: 12px; }
+    .sheet a { text-decoration: none !important; }
+  }
+</style>
