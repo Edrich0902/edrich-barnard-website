@@ -133,8 +133,8 @@ if (box && cv && cap && hint) {
 
   let loaded = 0;
   ditherImg.onload = photoImg.onload = () => { if (++loaded === 2) build(); };
-  ditherImg.src = "/images/edrich-dither.png";
-  photoImg.src = "/images/edrich-about.png";
+  ditherImg.src = "/images/edrich-dither.webp";
+  photoImg.src = "/images/edrich-about.webp";
   let t = 0;
   addEventListener("resize", () => { clearTimeout(t); t = window.setTimeout(build, 150); });
   addEventListener("palettechange", build);

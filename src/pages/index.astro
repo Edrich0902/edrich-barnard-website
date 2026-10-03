@@ -21,9 +21,9 @@ const clientData = {
 
 <Base>
   <canvas id="stage" class="pointer-events-none fixed inset-0 z-0 h-screen w-screen" aria-hidden="true"></canvas>
-  <a href="#about" class="sr-only z-50 bg-accent px-3 py-2 font-mono text-sm text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
+  <a href="#main" class="sr-only z-50 bg-accent px-3 py-2 font-mono text-sm text-bg focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
   <Header />
-  <main class="relative z-[1]">
+  <main id="main" tabindex="-1" class="relative z-[1] outline-none">
     <Hero />
     <About />
     <Work />

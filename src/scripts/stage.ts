@@ -105,9 +105,9 @@ if (canvas && renderer) {
       portrait: { x: m ? 0 : hw * 0.5, y: m ? 0.4 : -0.1, s: m ? 0.8 : Math.min(1.08, hw / 6.6), spin: 0, sway: 0.22, o: m ? 0.1 : 1 },
       field: { x: 0, y: 0, s: 1, spin: 0.01, sway: 0.05, o: 0.28 },
       wave: { x: 0, y: 0, s: 1, spin: 0, sway: 0.06, tilt: 0.32, o: 0.45 },
-      helix: { x: m ? 0 : -hw * 0.52, y: -0.75, s: 0.85, spin: 0.22, sway: 0.08, o: m ? 0.12 : 0.85 },
-      sphere: { x: m ? 0 : hw * 0.56, y: -0.2, s: m ? 0.8 : 0.82, spin: 0.14, sway: 0.12, o: m ? 0.12 : 0.8 },
-      ring: { x: m ? 0 : hw * 0.55, y: -0.3, s: m ? 0.8 : 0.82, spin: 0.05, sway: 0.18, tilt: 0.35, o: m ? 0.12 : 0.9 },
+      helix: { x: m ? 0 : -hw * 0.52, y: -1.05, s: 0.74, spin: 0.22, sway: 0.08, o: m ? 0.035 : 0.85 },
+      sphere: { x: m ? 0 : hw * 0.56, y: -0.35, s: m ? 0.8 : 0.8, spin: 0.14, sway: 0.12, o: m ? 0.035 : 0.8 },
+      ring: { x: m ? 0 : hw * 0.55, y: -0.65, s: m ? 0.8 : 0.74, spin: 0.05, sway: 0.18, tilt: 0.35, o: m ? 0.035 : 0.9 },
       text: { x: m ? 0 : hw * 0.5, y: m ? 1.2 : 0, s: 1, spin: 0, sway: 0.08, o: m ? 0.55 : 0.9 },
     };
   }
@@ -123,7 +123,7 @@ if (canvas && renderer) {
     if (current === "portrait" && !override) target = shapes.portrait;
   }
   img.onload = buildPortrait;
-  img.src = "/images/edrich-dither.png";
+  img.src = "/images/edrich-dither.webp";
   addEventListener("palettechange", buildPortrait);
 
   /* points */
@@ -211,6 +211,7 @@ if (canvas && renderer) {
     mouse.wy = mouse.y * halfH();
   });
 
+  const TAU = Math.PI * 2;
   let last = performance.now(), elapsed = 0;
   let spin = 0;
   function frame() {
@@ -225,7 +226,9 @@ if (canvas && renderer) {
     group.scale.setScalar(sc);
     mat.uniforms.uOpacity.value += (c.o - mat.uniforms.uOpacity.value) * k4;
     mat.uniforms.uWobble.value += ((pose === "portrait" || pose === "text" || reduceMotion ? 0.003 : 0.02) - mat.uniforms.uWobble.value) * k4;
-    if (!reduceMotion) spin += c.spin * dt;
+    // Flat poses (portrait, text) must face the camera: unwind spin left over from rotating shapes.
+    if (c.spin && !reduceMotion) spin += c.spin * dt;
+    else spin += (Math.round(spin / TAU) * TAU - spin) * k4;
     const sway = reduceMotion ? 0 : c.sway;
     group.rotation.y += (spin + mouse.x * sway - group.rotation.y) * k5;
     group.rotation.x += ((c.tilt || 0) - mouse.y * sway * 0.6 - group.rotation.x) * k5;

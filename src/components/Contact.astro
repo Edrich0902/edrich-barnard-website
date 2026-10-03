@@ -4,7 +4,7 @@ import { site } from "../data/site";
 const links = [
   ["GitHub", site.links.github, "open"],
   ["LinkedIn", site.links.linkedin, "open"],
-  ["CV", "/cv", "view / print"],
+  ["CV", "/cv/", "view / print"],
 ];
 ---
 
@@ -16,7 +16,7 @@ const links = [
         <p class="max-w-[30em] text-[17px] text-muted">For freelance projects, collaborations or just to talk shop. Email is best &mdash; I reply within a day.</p>
         <div class="mt-[34px] flex flex-wrap items-center gap-3.5">
           <a class="ulink text-[clamp(26px,3.6vw,48px)] font-medium tracking-[-0.03em] break-all" href={`mailto:${site.email}`} data-decode-email>{site.email}</a>
-          <button class="hbtn" type="button" data-copy-email>copy</button>
+          <button class="hbtn" type="button" data-copy-email aria-live="polite">copy</button>
         </div>
         <div class="mt-11 max-w-[520px] border-t border-line" data-stagger>
           {
@@ -24,7 +24,7 @@ const links = [
               <a
                 class="group flex justify-between border-b border-line py-3 text-[15px]"
                 href={href}
-                {...(href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
+                {...(href.startsWith("http") ? { target: "_blank", rel: "me noreferrer" } : {})}
               >
                 <span class="transition-[padding] duration-200 group-hover:pl-2">{label}</span>
                 <span class="font-mono text-xs text-faint group-hover:text-accent">

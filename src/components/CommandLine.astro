@@ -1,30 +1,3 @@
----
-const accents = [
-  ["lime", "#c8f031", "Lime"],
-  ["orange", "#ff6a2b", "Orange"],
-  ["blue", "#6b8cff", "Blue"],
-  ["mono", "linear-gradient(135deg,#e9e7e2 50%,#131312 50%)", "Monochrome"],
-];
----
-
-<div
-  id="dock"
-  class="fixed right-5 bottom-[18px] z-30 flex items-center gap-2 rounded-[2px] border border-line bg-bg py-1.5 pr-2 pl-2.5 font-mono text-[11.5px] text-faint transition-opacity duration-300 [&.hide]:pointer-events-none [&.hide]:opacity-0"
->
-  <span>accent</span>
-  {
-    accents.map(([id, bg, label]) => (
-      <button
-        type="button"
-        class="size-3.5 cursor-pointer border border-line-strong p-0 [&.on]:outline [&.on]:outline-1 [&.on]:outline-offset-2 [&.on]:outline-fg"
-        style={`background:${bg}`}
-        data-accent-swatch={id}
-        aria-label={`${label} accent`}
-      />
-    ))
-  }
-</div>
-
 <div
   id="cmd"
   role="dialog"
@@ -39,7 +12,7 @@ const accents = [
         id="cmdInput"
         autocomplete="off"
         spellcheck="false"
-        placeholder="type a command - try help"
+        placeholder="type a command — try help"
         class="min-w-0 flex-1 border-0 bg-transparent text-fg caret-accent outline-none placeholder:text-faint"
       />
       <span class="hidden text-[11.5px] text-faint sm:inline">esc to close</span>

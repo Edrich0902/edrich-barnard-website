@@ -8,8 +8,6 @@ const data = siteData();
 const cmd = document.getElementById("cmd")!;
 const input = document.getElementById("cmdInput") as HTMLInputElement;
 const out = document.getElementById("cmdOut")!;
-const dock = document.getElementById("dock");
-
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const emit = (name: string, detail?: unknown) => dispatchEvent(new CustomEvent(name, { detail }));
 const goTo = (id: string) => () => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); return null; };
@@ -41,7 +39,7 @@ const COMMANDS: Record<string, Command> = {
     },
   },
   email: { d: "copy my email address", stay: true, run: () => { copyEmail(); return `copied <b>${esc(data.email)}</b>`; } },
-  cv: { d: "view my CV", run: () => { location.href = "/cv"; return null; } },
+  cv: { d: "view my CV", run: () => { location.href = "/cv/"; return null; } },
   github: { d: "open GitHub", run: openUrl(data.links.github) },
   linkedin: { d: "open LinkedIn", run: openUrl(data.links.linkedin) },
   theme: {
@@ -110,7 +108,6 @@ function render() {
 
 function openCmd() {
   cmd.classList.add("open");
-  dock?.classList.add("hide");
   input.value = "";
   sel = 0;
   recall = -1;
@@ -120,7 +117,6 @@ function openCmd() {
 
 function closeCmd() {
   cmd.classList.remove("open");
-  dock?.classList.remove("hide");
   input.blur();
 }
 

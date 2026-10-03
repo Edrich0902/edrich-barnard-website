@@ -1,185 +1,372 @@
 ---
 import Base from "../layouts/Base.astro";
+import AccentSwatches from "../components/AccentSwatches.astro";
 import { site, experience, projects, stack, education, awards } from "../data/site";
 
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 const siteUrl = Astro.site && !Astro.site.hostname.includes("localhost") ? Astro.site.toString() : null;
-const skills = stack.map((g) => ({ group: g.group, items: g.items.map((i) => i.name).join(", ") }));
+const contact = [
+  { label: site.email, href: `mailto:${site.email}` },
+  { label: bare(site.links.linkedin), href: site.links.linkedin },
+  { label: bare(site.links.github), href: site.links.github },
+  ...(siteUrl ? [{ label: bare(siteUrl), href: siteUrl }] : []),
+];
 ---
 
-<Base title={`${site.name} - CV`} description={`Curriculum vitae of ${site.name}, ${site.role.toLowerCase()} based in ${site.location}.`} bodyClass="cv-body">
-  <div class="cv-bar wrap flex items-center justify-between gap-4 py-5 font-mono text-[12.5px] text-muted">
+<Base title={`${site.name} — CV`} description={`Curriculum vitae of ${site.name}, ${site.role.toLowerCase()} based in ${site.location}.`} bodyClass="cv-body">
+  <div class="cv-bar wrap flex flex-wrap items-center justify-between gap-4 py-5 font-mono text-[12.5px] text-muted">
     <a href="/" class="ulink">&larr; edrichbarnard</a>
-    <div class="flex items-center gap-2">
-      <span class="hidden text-faint sm:inline">A4 &middot; prints to PDF</span>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 text-faint" role="group" aria-label="CV accent colour">
+        <span class="hidden sm:inline">accent</span>
+        <AccentSwatches />
+      </div>
+      <button type="button" class="hbtn" data-photo-toggle aria-pressed="true">photo: on</button>
       <button type="button" class="hbtn" data-print>print / save as PDF</button>
     </div>
   </div>
+  <script is:inline>
+    document.documentElement.classList.toggle("cv-no-photo", localStorage.getItem("eb-cv-photo") === "off");
+  </script>
 
   <article class="sheet">
-    <header class="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b-2 border-current pb-5">
-      <div>
-        <h1 class="text-[34px] leading-none font-semibold tracking-[-0.025em]">{site.name}</h1>
-        <p class="mt-2 text-[15px] font-medium text-[var(--ink-2)]">{site.role}</p>
+    <header class="band">
+      <div class="id">
+        <figure class="photo">
+          <img src="/images/edrich-cv.webp" alt={`Portrait of ${site.name}`} width="420" height="420" />
+        </figure>
+        <div>
+          <p class="kicker">Curriculum vitae</p>
+          <h1><i></i>{site.name}</h1>
+          <p class="role">{site.role}</p>
+        </div>
       </div>
-      <ul class="contact text-right font-mono text-[11px] leading-[1.7] text-[var(--ink-2)]">
+      <ul class="contact">
         <li>{site.location}</li>
-        <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
-        <li><a href={site.links.linkedin}>{bare(site.links.linkedin)}</a></li>
-        <li><a href={site.links.github}>{bare(site.links.github)}</a></li>
-        {siteUrl && <li><a href={siteUrl}>{bare(siteUrl)}</a></li>}
+        {
+          contact.map((c) => (
+            <li>
+              <a href={c.href}>{c.label}</a>
+            </li>
+          ))
+        }
       </ul>
     </header>
 
-    <section>
-      <h2>Profile</h2>
-      <p class="text-[var(--ink-2)]">{site.profile}</p>
-    </section>
+    <div class="body">
+      <div class="main">
+        <section>
+          <h2><span>01</span>Profile</h2>
+          <p class="lead">{site.profile}</p>
+        </section>
 
-    <section>
-      <h2>Experience</h2>
-      {
-        experience.map((r) => (
-          <div class="entry">
-            <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-              <h3>
-                {r.role} <span class="font-normal text-[var(--ink-2)]">&middot; {r.company}</span>
-              </h3>
-              <span class="meta">{r.period}</span>
-            </div>
-            <p class="meta mt-0.5">{r.where}</p>
-            <ul class="bullets">
-              {r.details.map((d) => (
-                <li>{d}</li>
-              ))}
-            </ul>
-            {r.tags.length > 0 && <p class="meta mt-1.5">{r.tags.join(" / ")}</p>}
+        <section>
+          <h2><span>02</span>Experience</h2>
+          <ol class="timeline">
+            {
+              experience.map((r) => (
+                <li class="entry">
+                  <p class="when">
+                    {r.period} <span>&middot; {r.where}</span>
+                  </p>
+                  <h3>
+                    {r.role} <span>&middot; {r.company}</span>
+                  </h3>
+                  <ul class="bullets">
+                    {r.details.map((d) => {
+                      const lead = d.match(/^([^:]{2,32}):\s(.+)$/);
+                      return lead ? (
+                        <li>
+                          <b>{lead[1]}:</b> {lead[2]}
+                        </li>
+                      ) : (
+                        <li>{d}</li>
+                      );
+                    })}
+                  </ul>
+                  {r.tags.length > 0 && (
+                    <ul class="chips" aria-label="Technologies">
+                      {r.tags.map((t) => (
+                        <li>{t}</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section>
+          <h2><span>03</span>Selected projects</h2>
+          <div class="projects">
+            {
+              projects.map((p) => (
+                <div class="entry">
+                  <h3>
+                    {p.title} <span>&middot; {p.kind}</span>
+                  </h3>
+                  <p class="blurb">{p.blurb}</p>
+                  <p class="plink">
+                    <b>{p.metric}</b> &middot; <a href={p.url}>{bare(p.url).replace("github.com/", "gh/")}</a>
+                  </p>
+                </div>
+              ))
+            }
           </div>
-        ))
-      }
-    </section>
-
-    <section>
-      <h2>Selected projects</h2>
-      <div class="grid gap-x-8 gap-y-3 sm:grid-cols-2 print:grid-cols-2">
-        {
-          projects.map((p) => (
-            <div class="entry !mt-0">
-              <h3>
-                {p.title} <span class="font-normal text-[var(--ink-2)]">&middot; {p.kind}</span>
-              </h3>
-              <p class="mt-0.5 text-[12.5px] leading-[1.5] text-[var(--ink-2)]">{p.blurb}</p>
-              <p class="meta mt-1">{p.tags.join(" / ")} &middot; <a href={p.url}>{bare(p.url).replace("github.com/", "gh/")}</a></p>
-            </div>
-          ))
-        }
+        </section>
       </div>
-    </section>
 
-    <section>
-      <h2>Skills</h2>
-      <dl class="grid grid-cols-[130px_1fr] gap-x-4 gap-y-1.5 text-[12.5px]">
-        {
-          skills.map((s) => (
-            <>
-              <dt class="font-medium">{s.group}</dt>
-              <dd class="text-[var(--ink-2)]">{s.items}</dd>
-            </>
-          ))
-        }
-      </dl>
-    </section>
-
-    <section class="grid gap-x-8 sm:grid-cols-[1.6fr_1fr] print:grid-cols-[1.6fr_1fr]">
-      <div>
-        <h2>Education</h2>
-        {
-          education.map((e) => (
-            <div class="entry">
-              <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-                <h3>{e.title}</h3>
-                <span class="meta">{e.period}</span>
-              </div>
-              <p class="mt-0.5 text-[12.5px] text-[var(--ink-2)]">
-                {e.school}, {e.where}
-              </p>
-              <p class="meta mt-0.5">{e.note}</p>
-            </div>
-          ))
-        }
-      </div>
-      <div>
-        <h2>Languages</h2>
-        <p class="text-[12.5px] text-[var(--ink-2)]">{site.languages.join(", ")}</p>
-        <h2 class="!mt-5">Awards</h2>
-        <ul class="text-[12.5px] text-[var(--ink-2)]">
+      <aside class="side">
+        <section>
+          <h2>Skills</h2>
           {
-            awards.map((a) => (
-              <li>
-                {a.title} <span class="meta">&middot; {a.year}</span>
-              </li>
+            stack.map((g) => (
+              <div class="group">
+                <h3>{g.group}</h3>
+                <ul class="chips">
+                  {g.items.map((i) => (
+                    <li>{i.name}</li>
+                  ))}
+                </ul>
+              </div>
             ))
           }
-        </ul>
-      </div>
-    </section>
+        </section>
+
+        <section>
+          <h2>Industries</h2>
+          <ul class="chips">
+            {site.industries.map((i) => <li>{i}</li>)}
+          </ul>
+        </section>
+
+        <section>
+          <h2>Education</h2>
+          {
+            education.map((e) => (
+              <div class="edu">
+                <p class="when">{e.period}</p>
+                <h3>{e.title}</h3>
+                <p>
+                  {e.school}, {e.where}
+                </p>
+                <p class="note">{e.note}</p>
+              </div>
+            ))
+          }
+        </section>
+
+        <section>
+          <h2>Languages</h2>
+          <p>{site.languages.join(", ")}</p>
+        </section>
+
+        <section>
+          <h2>Awards</h2>
+          <ul>
+            {
+              awards.map((a) => (
+                <li>
+                  {a.title} <span class="when">&middot; {a.year}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+      </aside>
+    </div>
   </article>
 
-  <p class="cv-bar wrap py-8 text-center font-mono text-xs text-faint">Generated from the same data as the website.</p>
+  <p class="cv-bar wrap py-8 text-center font-mono text-xs text-faint">Generated from the same data as the website. The accent you pick here is used when printing.</p>
 </Base>
 
 <script>
+  import { setAccent, syncControls, type Accent } from "../scripts/palette";
+
+  syncControls();
+  document.querySelectorAll<HTMLElement>("[data-accent-swatch]").forEach((s) => s.addEventListener("click", () => setAccent(s.dataset.accentSwatch as Accent)));
   document.querySelector("[data-print]")?.addEventListener("click", () => print());
+
+  const photoBtn = document.querySelector<HTMLButtonElement>("[data-photo-toggle]");
+  const syncPhoto = () => {
+    const on = !document.documentElement.classList.contains("cv-no-photo");
+    if (photoBtn) {
+      photoBtn.textContent = `photo: ${on ? "on" : "off"}`;
+      photoBtn.setAttribute("aria-pressed", String(on));
+    }
+  };
+  syncPhoto();
+  photoBtn?.addEventListener("click", () => {
+    const off = document.documentElement.classList.toggle("cv-no-photo");
+    localStorage.setItem("eb-cv-photo", off ? "off" : "on");
+    syncPhoto();
+  });
 </script>
 
 <style is:global>
   .cv-body { background: var(--bg); }
+
+  /* Paper colours: --pa is the accent dark enough for white paper, --ba the bright one for the dark band. */
   .sheet {
     --paper: #ffffff;
     --ink: #151514;
-    --ink-2: #4a4945;
-    --ink-3: #6f6e69;
+    --ink-2: #44433f;
+    --ink-3: #6a6964;
+    --rule: #e2e1dc;
+    --band: #151514;
+    --pa: #4f7000;
+    --ba: #c8f031;
+    --tint: color-mix(in srgb, var(--pa) 6%, var(--paper));
+    --chip: color-mix(in srgb, var(--pa) 9%, var(--paper));
+    --chip-line: color-mix(in srgb, var(--pa) 28%, var(--paper));
     max-width: 210mm;
     margin: 0 auto;
-    padding: 16mm 16mm 14mm;
     background: var(--paper);
     color: var(--ink);
-    font-size: 13px;
+    font-size: 12.5px;
     line-height: 1.55;
     box-shadow: 0 0 0 1px var(--line), 0 20px 60px -30px rgb(0 0 0 / 0.5);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
+  [data-accent="orange"] .sheet { --pa: #c2410c; --ba: #ff6a2b; }
+  [data-accent="blue"] .sheet { --pa: #2349d8; --ba: #6b8cff; }
+  [data-accent="mono"] .sheet { --pa: #151514; --ba: #ffffff; --tint: #f4f4f2; --chip: #f1f1ee; --chip-line: #d4d3ce; }
+
   .sheet a { color: inherit; text-decoration: none; }
   .sheet a:hover { text-decoration: underline; }
-  .sheet section { margin-top: 20px; }
+
+  /* masthead */
+  .sheet .band {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px 32px;
+    padding: 13mm 14mm 9mm;
+    background: var(--band);
+    color: #f1f0ec;
+    overflow: hidden;
+  }
+  .sheet .band::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 45%;
+    background: radial-gradient(circle, var(--ba) 0.9px, transparent 1.3px) 0 0 / 7px 7px;
+    opacity: 0.32;
+    -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+    mask-image: linear-gradient(to left, #000 0%, transparent 85%);
+    pointer-events: none;
+  }
+  .sheet .band > * { position: relative; z-index: 1; }
+  .sheet .id { display: flex; align-items: center; gap: 7mm; }
+  .sheet .photo {
+    position: relative;
+    flex: none;
+    width: 30mm;
+    height: 30mm;
+    overflow: hidden;
+    border-radius: 2px;
+    background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--ba) 34%, #1f1f1d), #1f1f1d 72%);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+  .sheet .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .sheet .photo::after { content: ""; position: absolute; right: 0; bottom: 0; width: 7px; height: 7px; background: var(--ba); }
+  .cv-no-photo .sheet .photo { display: none; }
+  .sheet .kicker { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: #8e8c86; }
+  .sheet .band h1 { display: flex; align-items: center; gap: 12px; margin-top: 8px; font-size: 32px; line-height: 1; font-weight: 600; letter-spacing: -0.025em; }
+  .sheet .band h1 i { display: block; width: 11px; height: 11px; background: var(--ba); }
+  .sheet .role { margin-top: 8px; padding-left: 23px; font-size: 14px; font-weight: 500; color: var(--ba); }
+  .sheet .contact { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.75; text-align: right; color: #c9c7c1; }
+
+  /* two columns */
+  .sheet .body { display: grid; grid-template-columns: 1fr 62mm; grid-template-areas: "main side"; }
+  .sheet .main { grid-area: main; padding: 8mm 9mm 10mm 14mm; }
+  .sheet .side { grid-area: side; padding: 8mm 12mm 10mm 7mm; background: var(--tint); border-left: 1px solid var(--chip-line); }
+  .sheet section + section { margin-top: 18px; }
+
   .sheet h2 {
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: var(--ink);
   }
-  .sheet h3 { font-size: 13.5px; font-weight: 600; }
-  .sheet .entry + .entry { margin-top: 14px; }
-  .sheet .meta { font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-3); }
+  .sheet h2 span { color: var(--pa); }
+  .sheet .main h2::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+  .sheet h3 { font-size: 13px; font-weight: 600; line-height: 1.4; }
+  .sheet h3 span { font-weight: 400; color: var(--ink-2); }
+  .sheet .lead { color: var(--ink-2); }
+  .sheet .when { font-family: var(--font-mono); font-size: 10px; color: var(--pa); }
+  .sheet .when span { color: var(--ink-3); }
+
+  /* experience timeline */
+  .sheet .timeline { position: relative; margin-left: 4px; padding-left: 18px; border-left: 1px solid var(--rule); }
+  .sheet .timeline .entry { position: relative; }
+  .sheet .timeline .entry + .entry { margin-top: 16px; }
+  .sheet .timeline .entry::before { content: ""; position: absolute; left: -22.5px; top: 3px; width: 8px; height: 8px; background: var(--pa); box-shadow: 0 0 0 3px var(--paper); }
+  .sheet .timeline h3 { margin-top: 1px; }
   .sheet .bullets { margin-top: 6px; }
-  .sheet .bullets li { position: relative; padding-left: 14px; font-size: 12.5px; color: var(--ink-2); }
-  .sheet .bullets li + li { margin-top: 3px; }
-  .sheet .bullets li::before { content: ""; position: absolute; left: 1px; top: 0.62em; width: 5px; height: 5px; background: var(--ink); }
-  .sheet section, .sheet .entry { break-inside: avoid-page; }
-  .sheet section:has(.entry + .entry) { break-inside: auto; }
+  .sheet .bullets li { position: relative; padding-left: 13px; color: var(--ink-2); }
+  .sheet .bullets li + li { margin-top: 2px; }
+  .sheet .bullets b { font-weight: 600; color: var(--ink); }
+  .sheet .bullets li::before { content: ""; position: absolute; left: 1px; top: 0.6em; width: 4px; height: 4px; background: var(--pa); }
 
-  @media (max-width: 640px) {
-    .sheet { padding: 28px 20px; box-shadow: none; }
+  .sheet .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .sheet .chips li { padding: 1px 6px; border: 1px solid var(--chip-line); border-radius: 2px; background: var(--chip); font-family: var(--font-mono); font-size: 9.5px; line-height: 1.6; color: var(--ink-2); }
+  .sheet .side .chips li { background: var(--paper); }
+
+  .sheet .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .sheet .blurb { margin-top: 2px; font-size: 11.5px; line-height: 1.5; color: var(--ink-2); }
+  .sheet .plink { margin-top: 4px; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-3); }
+  .sheet .plink b { font-weight: 500; color: var(--pa); }
+
+  /* sidebar */
+  .sheet .side { font-size: 11.5px; color: var(--ink-2); }
+  .sheet .side .group + .group { margin-top: 9px; }
+  .sheet .side .group h3 { font-family: var(--font-mono); font-size: 9.5px; font-weight: 400; color: var(--ink-3); }
+  .sheet .side .group .chips { margin-top: 4px; }
+  .sheet .side > section > .chips { margin-top: 0; }
+  .sheet .edu + .edu { margin-top: 10px; }
+  .sheet .edu h3 { font-size: 12px; color: var(--ink); }
+  .sheet .edu .note { font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-3); }
+
+  .sheet .projects .entry, .sheet .edu, .sheet .group, .sheet .bullets li, .sheet .chips { break-inside: avoid; }
+  .sheet h2, .sheet .when, .sheet .timeline h3 { break-after: avoid; }
+
+  @media (max-width: 720px) {
+    .sheet { box-shadow: none; }
+    .sheet .band { padding: 28px 20px 22px; }
     .sheet .contact { text-align: left; }
+    .sheet .body { grid-template-columns: 1fr; grid-template-areas: "main" "side"; }
+    .sheet .main { padding: 24px 20px; }
+    .sheet .side { padding: 24px 20px; border-left: 0; border-top: 1px solid var(--chip-line); }
+    .sheet .projects { grid-template-columns: 1fr; }
   }
 
-  @page { size: A4; margin: 12mm 14mm; }
+  @page {
+    size: A4;
+    margin: 10mm 0 12mm;
+    @bottom-left { content: "Edrich Barnard \00B7  Curriculum vitae"; padding-left: 14mm; font: 7pt "IBM Plex Mono", monospace; color: #8e8c86; }
+    @bottom-right { content: counter(page) " / " counter(pages); padding-right: 14mm; font: 7pt "IBM Plex Mono", monospace; color: #8e8c86; }
+  }
+  @page :first { margin-top: 0; }
   @media print {
     html, body.cv-body { background: #fff !important; }
     .cv-bar { display: none !important; }
-    .sheet { max-width: none; padding: 0; box-shadow: none; font-size: 12px; }
+    .sheet { max-width: none; box-shadow: none; font-size: 11.5px; }
     .sheet a { text-decoration: none !important; }
+    /* Fixed elements repeat on every printed page, so the sidebar tint runs full height on each one. */
+    .sheet::before { content: ""; position: fixed; inset: 0 0 0 auto; width: 62mm; background: var(--tint); border-left: 1px solid var(--chip-line); }
+    .sheet .band { z-index: 1; }
+    .sheet .body { position: relative; }
+    .sheet .side { background: none; border-left-color: transparent; }
   }
 </style>

@@ -2,7 +2,7 @@
 import Base from "../layouts/Base.astro";
 ---
 
-<Base title="404 - command not found">
+<Base title="404 — command not found" noindex>
   <main class="wrap flex min-h-screen flex-col justify-center py-24 font-mono text-sm">
     <p class="text-faint">~/edrich $ <span class="text-fg">cd <span data-path>/missing</span></span></p>
     <p class="mt-2 text-muted">cd: no such file or directory: <span data-path>/missing</span></p>
@@ -11,7 +11,7 @@ import Base from "../layouts/Base.astro";
     <ul class="mt-10 flex flex-wrap gap-2">
       <li><a class="btn btn-solid" href="/">cd ~</a></li>
       <li><a class="btn" href="/#work">ls work/</a></li>
-      <li><a class="btn" href="/cv">cat cv</a></li>
+      <li><a class="btn" href="/cv/">cat cv</a></li>
     </ul>
   </main>
 </Base>

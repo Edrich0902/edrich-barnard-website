@@ -18,7 +18,13 @@ npm run watch                       # http://localhost:4321
 | `npm run preview` | Serve whatever is currently in `dist/` at http://localhost:4321      |
 | `npm run check`   | Type-check `.astro` and `.ts` files                                  |
 
-Non-production builds add a `noindex` tag so a test deploy never ends up in search results.
+Non-production builds add a `noindex` tag and a `robots.txt` that disallows everything, so a test deploy never ends up in search results. Production builds generate `robots.txt` and `sitemap.xml` pointing at `SITE_URL`.
+
+## SEO
+
+- Titles, the meta description (`site.description`), Open Graph and Twitter tags, and a canonical URL with a trailing slash are set in [`Base.astro`](src/layouts/Base.astro).
+- Structured data (`WebSite`, `Person` and `ProfilePage` on the homepage) is built from `site.ts`, so it stays in sync with the content.
+- After launch, add the domain to [Google Search Console](https://search.google.com/search-console) and submit `https://edrichbarnard.co.za/sitemap.xml`. Linking the site from your GitHub profile and LinkedIn helps it get picked up faster.
 
 ## Environment
 
@@ -48,6 +54,8 @@ The GitHub contribution graph is rendered at build time, then refreshed in the v
 
 All copy lives in [`src/data/site.ts`](src/data/site.ts) - bio, stack, projects, experience, education and the "Currently" log. The homepage and the `/cv` page both render from it.
 
+The CV picks up the accent chosen on the site (or in its own toolbar) and prints in colour; it's laid out to fit two A4 pages.
+
 - **Stack icons** come from [simple-icons](https://simpleicons.org); set `icon` to the export name (e.g. `siVuedotjs`). For brands simple-icons doesn't ship, set `mono` to a short monogram instead.
 - **Project media**: drop screenshots in `public/media/projects/<slug>/` and list them on the project:
 
@@ -68,10 +76,10 @@ src/
   data/site.ts        content
   layouts/Base.astro  <head>, SEO, theme bootstrap, analytics
   components/         page sections
-  pages/              index, cv, 404
-  scripts/            client-side: particle stage, dither portrait, project canvases, command line
-  lib/github.ts       build-time contribution graph
+  pages/              index, cv, 404, robots.txt, sitemap.xml
+  scripts/            client-side: particle stage, dither portrait, project canvases, graph, command line
+  lib/                build-time contribution graph
 public/
-  images/             portrait sources for the dither and particles
-  og.png, favicon.svg
+  images/             portrait sources (WebP) for the dither and particles
+  og.png, favicon.svg, apple-touch-icon.png, icon-*.png, site.webmanifest
 ```

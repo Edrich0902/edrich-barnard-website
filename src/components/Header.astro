@@ -1,5 +1,6 @@
 ---
 import { site } from "../data/site";
+import AccentSwatches from "./AccentSwatches.astro";
 
 const nav = [
   ["about", "About"],
@@ -10,9 +11,9 @@ const nav = [
 ];
 ---
 
-<header id="hdr" class="fixed inset-x-0 top-0 z-20 border-b border-transparent bg-bg/90 backdrop-blur-sm transition-colors duration-300 [&.scrolled]:border-line">
+<header id="hdr" class="fixed inset-x-0 top-0 z-20 border-b border-transparent bg-bg/90 backdrop-blur-sm transition-colors duration-300 [&.menu-open]:border-line [&.menu-open]:bg-bg [&.scrolled]:border-line">
   <div class="wrap flex h-[60px] items-center gap-8">
-    <a href="/#hero" class="flex items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
+    <a href="/#hero" class="flex shrink-0 items-center gap-2.5 text-[15px] font-medium tracking-[-0.01em]">
       <i class="block size-2.5 bg-accent"></i>{site.name}
     </a>
     <nav id="nav" class="relative mx-auto hidden gap-[26px] text-sm min-[900px]:flex" aria-label="Sections">
@@ -29,10 +30,81 @@ const nav = [
         ))
       }
     </nav>
-    <div class="ml-auto flex gap-2 min-[900px]:ml-0">
-      <a class="hbtn hidden sm:inline-block" href="/cv">cv</a>
-      <button class="hbtn" id="cmdBtn" type="button" aria-label="Open command line"><kbd>/</kbd> command</button>
+    <div class="ml-auto flex items-center gap-2 min-[900px]:ml-0">
+      <a class="hbtn hidden min-[900px]:inline-block" href="/cv/">cv</a>
+      <button class="hbtn" id="cmdBtn" type="button" aria-label="Open command line"><kbd>/</kbd><span class="hidden sm:inline"> command</span></button>
       <button class="hbtn" id="themeBtn" type="button" aria-label="Toggle colour theme">theme</button>
+      <div class="relative hidden min-[900px]:block">
+        <button class="hbtn flex h-[26px] items-center" id="accentBtn" type="button" aria-label="Choose accent colour" aria-expanded="false" aria-controls="accentPop">
+          <i class="block size-2.5 bg-accent"></i>
+        </button>
+        <div
+          id="accentPop"
+          class="invisible absolute top-[calc(100%+10px)] right-0 flex translate-y-1 items-center gap-2.5 rounded-[2px] border border-line bg-bg py-2 pr-2.5 pl-3 font-mono text-[11.5px] text-faint opacity-0 transition-[opacity,transform,visibility] duration-200 [&.open]:visible [&.open]:translate-y-0 [&.open]:opacity-100"
+          role="group"
+          aria-label="Accent colour">
+          <span class="mr-0.5">accent</span>
+          <AccentSwatches />
+        </div>
+      </div>
+      <button class="hbtn min-[900px]:hidden" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu">menu</button>
+    </div>
+  </div>
+
+  <div id="menu" class="bg-bg min-[900px]:hidden" aria-label="Menu">
+    <div class="menu-inner border-t border-line">
+      <nav class="wrap py-3" aria-label="Sections">
+        {
+          nav.map(([id, label], i) => (
+            <a
+              href={`/#${id}`}
+              data-section={id}
+              class="menu-item group flex items-baseline gap-4 border-b border-line py-3.5 text-[22px] font-medium tracking-[-0.02em] text-muted last:border-0 [&.active]:text-fg"
+              style={`--i:${i}`}
+            >
+              <span class="w-6 font-mono text-[12px] text-faint group-[.active]:text-accent">{String(i + 1).padStart(2, "0")}</span>
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+      <div class="menu-item wrap flex items-center justify-between gap-4 border-t border-line py-4 font-mono text-[12.5px] text-faint" style={`--i:${nav.length}`}>
+        <a class="hbtn" href="/cv/">cv / print</a>
+        <div class="flex items-center gap-3" role="group" aria-label="Accent colour">
+          <span>accent</span>
+          <AccentSwatches size="size-5" />
+        </div>
+      </div>
     </div>
   </div>
 </header>
+
+<style>
+  /* Collapsed with a 0fr grid row so the height can animate; visibility keeps closed items out of the tab order. */
+  #menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition: grid-template-rows 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s 0.35s;
+  }
+  #menu.open {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+  }
+  .menu-inner { min-height: 0; overflow: hidden; }
+  .menu-item {
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  #menu.open .menu-item {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: calc(60ms + var(--i) * 40ms);
+  }
+  @media (min-width: 900px) {
+    #menu { display: none; }
+  }
+</style>

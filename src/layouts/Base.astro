@@ -4,53 +4,90 @@ import "@fontsource/ibm-plex-sans/500.css";
 import "@fontsource/ibm-plex-sans/600.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import plexSans400 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url";
+import plexSans500 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-500-normal.woff2?url";
 import "../styles/global.css";
-import { site } from "../data/site";
+import { site, experience, education, stack } from "../data/site";
 
 interface Props {
   title?: string;
   description?: string;
   bodyClass?: string;
+  noindex?: boolean;
 }
 
-const { title = `${site.name} - ${site.role}`, description = site.description, bodyClass = "" } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const { title = `${site.name} — ${site.role}`, description = site.description, bodyClass = "", noindex = false } = Astro.props;
+// nginx serves directory pages at /path/, so canonical URLs carry the trailing slash.
+const path = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = new URL(path, Astro.site);
+const home = new URL("/", Astro.site).toString();
 const ogImage = new URL("/og.png", Astro.site);
 const isProd = import.meta.env.MODE === "production";
 const umamiId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
 const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC || "https://cloud.umami.is/script.js";
-const personLd = {
-  "@context": "https://schema.org",
+const [givenName, ...rest] = site.name.split(" ");
+
+const person = {
   "@type": "Person",
+  "@id": `${home}#person`,
   name: site.name,
+  givenName,
+  familyName: rest.join(" "),
   jobTitle: site.role,
+  description: site.description,
+  url: home,
+  image: new URL("/images/edrich-about.webp", Astro.site).toString(),
   email: `mailto:${site.email}`,
   address: { "@type": "PostalAddress", addressLocality: "Paarl", addressRegion: "Western Cape", addressCountry: "ZA" },
+  worksFor: { "@type": "Organization", name: experience[0].company },
+  alumniOf: { "@type": "CollegeOrUniversity", name: education[0].school },
+  knowsAbout: stack.flatMap((g) => g.items.map((i) => i.name)),
+  knowsLanguage: site.languages,
   sameAs: [site.links.github, site.links.linkedin],
-  url: Astro.site?.toString(),
 };
+const graph = [
+  { "@type": "WebSite", "@id": `${home}#website`, url: home, name: site.name, inLanguage: "en-ZA", publisher: { "@id": `${home}#person` } },
+  person,
+  ...(path === "/"
+    ? [{ "@type": "ProfilePage", "@id": `${home}#profile`, url: home, name: title, isPartOf: { "@id": `${home}#website` }, mainEntity: { "@id": `${home}#person` }, dateModified: new Date().toISOString() }]
+    : []),
+];
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark" data-accent="lime" class="no-js">
+<html lang="en-ZA" data-theme="dark" data-accent="lime" class="no-js">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
     <link rel="canonical" href={canonical} />
-    {!isProd && <meta name="robots" content="noindex, nofollow" />}
+    {(!isProd || noindex) && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preload" href={plexSans500} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={plexSans400} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0f0f0e" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_ZA" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.role}`} />
+    <meta property="profile:first_name" content={givenName} />
+    <meta property="profile:last_name" content={rest.join(" ")} />
     <meta name="twitter:card" content="summary_large_image" />
-    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": graph })} />
     <script is:inline>
       (() => {
         const root = document.documentElement, q = new URLSearchParams(location.search);

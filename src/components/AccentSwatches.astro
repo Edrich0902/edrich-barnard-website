@@ -1,0 +1,24 @@
+---
+interface Props {
+  size?: string;
+}
+const { size = "size-3.5" } = Astro.props;
+const accents = [
+  ["lime", "#c8f031", "Lime"],
+  ["orange", "#ff6a2b", "Orange"],
+  ["blue", "#6b8cff", "Blue"],
+  ["mono", "linear-gradient(135deg,#e9e7e2 50%,#131312 50%)", "Monochrome"],
+];
+---
+
+{
+  accents.map(([id, bg, label]) => (
+    <button
+      type="button"
+      class:list={[size, "cursor-pointer border border-line-strong p-0 [&.on]:outline [&.on]:outline-1 [&.on]:outline-offset-2 [&.on]:outline-fg"]}
+      style={`background:${bg}`}
+      data-accent-swatch={id}
+      aria-label={`${label} accent`}
+    />
+  ))
+}

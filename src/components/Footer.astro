@@ -2,13 +2,39 @@
 import { site } from "../data/site";
 
 const built = new Date().toISOString().slice(0, 10);
+const links = [
+  ["GitHub", site.links.github],
+  ["LinkedIn", site.links.linkedin],
+  ["Email", `mailto:${site.email}`],
+  ["CV", "/cv/"],
+];
 ---
 
-<footer class="relative z-[1] pt-7 pb-[90px]">
+<footer class="relative z-[1] pt-7 pb-14">
   <div class="wrap">
-    <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-[18px] font-mono text-xs text-faint">
-      <span>&copy; {new Date().getFullYear()} {site.name}</span>
-      <span>Built with Astro. Last updated {built}.</span>
+    <div class="grid gap-6 border-t border-line pt-6 font-mono text-xs text-faint sm:grid-cols-3 sm:items-start">
+      <div class="flex flex-col gap-1">
+        <span class="flex items-center gap-2 text-muted"><i class="block size-2 bg-accent"></i>&copy; {new Date().getFullYear()} {site.name}</span>
+        <span>{site.location} &middot; <span data-clock="short">--:--</span> local</span>
+      </div>
+      <ul class="flex flex-wrap gap-x-5 gap-y-1 sm:justify-center">
+        {
+          links.map(([label, href]) => (
+            <li>
+              <a class="ulink hover:text-fg" href={href} {...(href.startsWith("http") ? { target: "_blank", rel: "me noreferrer" } : {})}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex flex-col gap-1 sm:items-end">
+        <a class="group hover:text-fg" href="#hero">
+          back to top <span class="inline-block transition-transform duration-200 group-hover:-translate-y-0.5">&uarr;</span>
+        </a>
+        <span class="hidden min-[900px]:inline">press <kbd class="border border-line px-1 text-muted">/</kbd> for the command line</span>
+      </div>
     </div>
+    <p class="mt-8 font-mono text-[11px] text-faint">Built with Astro &middot; last updated {built}</p>
   </div>
 </footer>

@@ -12,19 +12,20 @@ export const site = {
     github: "https://github.com/Edrich0902",
     linkedin: "https://www.linkedin.com/in/edrich-barnard-10a811155/",
   },
+  /** Meta description for search results and link previews; keep it under ~160 characters. */
   description:
-    "Full-stack software engineer from Paarl, South Africa, building web platforms, mobile apps and native tools.",
-  lede: "I build web platforms, mobile apps and native tools - from the database schema to the App Store release.",
+    "Edrich Barnard is a full-stack software engineer in Paarl, South Africa, building web platforms, mobile apps and native tools with Flutter, Vue and Laravel.",
+  lede: "I build web platforms, mobile apps and native tools — from the database schema to the App Store release.",
   intro:
     "Full-stack engineer from Paarl, South Africa. For close to six years I've built and kept running software for Agri-Tech, fitness, cold storage, cellar management, banking and churches.",
   about: [
     "Today I'm a full-stack software engineer at Inspiration Starts Here, working remotely with a New York-based team. I own most of the mobile side: I built our white-label Flutter app solo, it runs every one of our branded apps, and I automated its build and release pipeline to TestFlight and Google Play. I also built the effects and animation engine behind our site builder.",
-    "Before that I spent four and a half years at I3 Zone Development, where I led most of my projects and was the main point of contact for clients - from a fruit-evaluation platform used by around 200 people to real-time cold-chain monitoring on Teltonika sensors. I worked across Angular, Laravel, ASP.NET, React, MeteorJS, Grails and Spring Boot, wrote native Swift and Kotlin plugins for a banking app, and helped interview new engineers. AI tools like Claude Code and Cursor are part of my daily workflow.",
+    "Before that I spent four and a half years at I3 Zone Development, where I led most of my projects and was the main point of contact for clients — from a fruit-evaluation platform used by around 200 people to real-time cold-chain monitoring on Teltonika sensors. I worked across Angular, Laravel, ASP.NET, React, MeteorJS, Grails and Spring Boot, wrote native Swift and Kotlin plugins for a banking app, and helped interview new engineers. AI tools like Claude Code and Cursor are part of my daily workflow.",
     "After hours I build tools I want to use myself and products for my church: the Lewende Woord app, portal and platform, a macOS audio mixer, and a one-click dev environment launcher. I hold a BSc in Information Technology from the Pearson Institute of Higher Education, graduated magna cum laude.",
   ],
   /** Summary at the top of the /cv page. */
   profile:
-    "Full-stack software engineer with close to six years of experience building and running production software for Agri-Tech, fitness, cold storage, cellar management, banking and church organisations. Works across the whole stack - database schema, APIs and web front-ends through to native plugins and App Store releases - and is comfortable owning a product from first commit to release. Has led client projects end to end, from scoping and client communication through to delivery. Currently owns the white-label Flutter platform and its automated release pipeline for a New York-based team.",
+    "Full-stack software engineer with close to six years of experience building and running production software for Agri-Tech, fitness, cold storage, cellar management, banking and church organisations. Works across the whole stack — database schema, APIs and web front-ends through to native plugins and App Store releases — and is comfortable owning a product from first commit to release. Has led client projects end to end, from scoping and client communication through to delivery. Currently owns the white-label Flutter platform and its automated release pipeline for a New York-based team.",
   industries: ["Agri-Tech", "Fitness", "Cold storage", "Cellar management", "Banking", "Church tech"],
   languages: ["English", "Afrikaans"],
   since: 2020,
@@ -176,7 +177,7 @@ export const projects: Project[] = [
     title: "FlowState",
     year: "2026",
     kind: "Developer tool",
-    blurb: "Menu-bar launcher that boots a whole dev environment in one click - Docker, database, backend, frontend, IDE and browser - in the right order, every time.",
+    blurb: "Menu-bar launcher that boots a whole dev environment in one click — Docker, database, backend, frontend, IDE and browser — in the right order, every time.",
     tags: ["Electron", "Vue 3", "TypeScript"],
     metric: "8+ commands to 1 click",
     url: "https://github.com/Edrich0902/Flowstate",
@@ -210,11 +211,11 @@ export type Role = {
 
 export const experience: Role[] = [
   {
-    period: "Jul 2025 - Now",
+    period: "Jul 2025 – Now",
     role: "Full-Stack Software Engineer",
     company: "Inspiration Starts Here",
     where: "Remote, New York",
-    summary: "Own most of the mobile side for a New York-based team of 8-10, alongside core product work on a PHP and Vue.js platform.",
+    summary: "Own most of the mobile side for a New York-based team of 8–10, alongside core product work on a PHP and Vue.js platform.",
     highlights: [
       "Built, solo, the white-label Flutter app that powers every one of our branded apps",
       "Release tooling that takes white-label builds to TestFlight and Google Play in as few steps as possible",
@@ -230,7 +231,7 @@ export const experience: Role[] = [
     tags: ["Flutter", "PHP", "Vue.js", "TestFlight", "Google Play", "Release automation"],
   },
   {
-    period: "Dec 2020 - Jul 2025",
+    period: "Dec 2020 – Jul 2025",
     role: "Full-Stack Software Developer",
     company: "I3 Zone Development",
     where: "Paarl, South Africa",
@@ -241,21 +242,21 @@ export const experience: Role[] = [
       "Project lead and main client contact; interviewed new engineering candidates",
     ],
     details: [
-      "Project leadership: led most of the projects I worked on - client communication, scoping and project management through to delivery - and took part in interviewing new candidates.",
+      "Project leadership: led most of the projects I worked on — client communication, scoping and project management through to delivery — and took part in interviewing new candidates.",
       "Agri-Tech: built and maintained a fruit-evaluation platform used by around 200 people, with a Laravel, MySQL and Redis backend, an Angular front end and a native Android app.",
       "Cold-chain monitoring: built real-time monitoring in MeteorJS on Teltonika sensors, tracking temperature and humidity and plotting GPS routes on a map.",
-      "Designed and launched a fitness application with Vue.js and Cordova, focused on user experience.",
-      "Contributed to cellar management systems integrating ASP.NET and React.",
-      "Updated Jenkins build scripts and performed ongoing server maintenance for performance and reliability.",
-      "Developed functionality for in-house solutions using Grails and Spring Boot.",
-      "Implemented Cordova plugins in Swift and Kotlin for cross-platform iOS and Android support in the banking sector.",
-      "Implemented device notifications using Firebase Cloud Messaging.",
-      "Evaluated AWS DynamoDB for a specific project.",
+      "Fitness: designed and launched a fitness application with Vue.js and Cordova, focused on user experience.",
+      "Cellar management: contributed to cellar management systems integrating ASP.NET and React.",
+      "Banking: implemented Cordova plugins in Swift and Kotlin for cross-platform iOS and Android support.",
+      "In-house products: developed functionality for in-house solutions using Grails and Spring Boot.",
+      "Build and infrastructure: updated Jenkins build scripts and performed ongoing server maintenance for performance and reliability.",
+      "Push notifications: implemented device notifications using Firebase Cloud Messaging.",
+      "Research: evaluated AWS DynamoDB as a data store for a client project.",
     ],
     tags: ["Laravel", "Angular", "MySQL", "Redis", "Android", "MeteorJS", "Teltonika", "Vue.js", "Cordova", "ASP.NET", "React", "Grails", "Spring Boot", "Swift", "Kotlin", "Firebase", "Jenkins"],
   },
   {
-    period: "Jan - Feb 2019",
+    period: "Jan – Feb 2019",
     role: "Intern",
     company: "One2One IT Services & Solutions",
     where: "Paarl, South Africa",
@@ -274,14 +275,14 @@ export const experience: Role[] = [
 
 export const education = [
   {
-    period: "2018 - 2020",
+    period: "2018–2020",
     title: "BSc Information Technology",
     school: "Pearson Institute of Higher Education",
     where: "Durbanville, South Africa",
     note: "Magna cum laude",
   },
   {
-    period: "2013 - 2017",
+    period: "2013–2017",
     title: "High School Diploma",
     school: "Hoërskool Paarl Gimnasium",
     where: "Paarl, South Africa",
@@ -296,7 +297,7 @@ export const awards = [
 
 export const currently = [
   { date: "2026-10", text: "Designing and building this website" },
-  { date: "2026-09", text: "Building OmniLevel - per-app audio for macOS" },
+  { date: "2026-09", text: "Building OmniLevel — per-app audio for macOS" },
   { date: "2026-08", text: "Push notifications and Groups 2.0 for the Lewende Woord app" },
   { date: "2026-08", text: "Shipping white-label Flutter apps at Inspiration Starts Here" },
 ];
