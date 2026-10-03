@@ -25,7 +25,7 @@ export const site = {
   ],
   /** Summary at the top of the /cv page. */
   profile:
-    "Full-stack software engineer with close to six years of experience building and running production software for Agri-Tech, fitness, cold storage, cellar management, banking and church organisations. Works across the whole stack — database schema, APIs and web front-ends through to native plugins and App Store releases — and is comfortable owning a product from first commit to release. Has led client projects end to end, from scoping and client communication through to delivery. Currently owns the white-label Flutter platform and its automated release pipeline for a New York-based team.",
+    "Full-stack software engineer with close to six years of production experience across Agri-Tech, fitness, cold storage, cellar management, banking and church tech. Owns products end to end, from database schema and APIs to native plugins and App Store releases, and has led client projects from scoping to delivery. Currently runs the white-label Flutter platform and its release pipeline for a New York-based team.",
   industries: ["Agri-Tech", "Fitness", "Cold storage", "Cellar management", "Banking", "Church tech"],
   languages: ["English", "Afrikaans"],
   since: 2020,
@@ -249,9 +249,8 @@ export const experience: Role[] = [
       "Cellar management: contributed to cellar management systems integrating ASP.NET and React.",
       "Banking: implemented Cordova plugins in Swift and Kotlin for cross-platform iOS and Android support.",
       "In-house products: developed functionality for in-house solutions using Grails and Spring Boot.",
-      "Build and infrastructure: updated Jenkins build scripts and performed ongoing server maintenance for performance and reliability.",
+      "Build and infrastructure: updated Jenkins build scripts, maintained servers for performance and reliability, and evaluated AWS DynamoDB as a data store for a client project.",
       "Push notifications: implemented device notifications using Firebase Cloud Messaging.",
-      "Research: evaluated AWS DynamoDB as a data store for a client project.",
     ],
     tags: ["Laravel", "Angular", "MySQL", "Redis", "Android", "MeteorJS", "Teltonika", "Vue.js", "Cordova", "ASP.NET", "React", "Grails", "Spring Boot", "Swift", "Kotlin", "Firebase", "Jenkins"],
   },
@@ -262,13 +261,7 @@ export const experience: Role[] = [
     where: "Paarl, South Africa",
     summary: "Hardware and software installs, networking and cabling, troubleshooting and day-to-day IT support.",
     highlights: [],
-    details: [
-      "Conducted general computer maintenance to keep systems performing well.",
-      "Performed hardware installations, including setup and configuration of new devices.",
-      "Executed software installations and setup, ensuring compatibility.",
-      "Carried out networking tasks, including cabling and infrastructure support.",
-      "Assisted in troubleshooting technical issues to minimise downtime.",
-    ],
+    details: ["IT support: hardware and software installs, networking and cabling, and day-to-day troubleshooting."],
     tags: [],
   },
 ];
@@ -296,7 +289,7 @@ export const awards = [
 ];
 
 export const currently = [
-  { date: "2026-10", text: "Designing and building this website" },
+  { date: "2026-10", text: "Designing and building edrichbarnard.co.za" },
   { date: "2026-09", text: "Building OmniLevel — per-app audio for macOS" },
   { date: "2026-08", text: "Push notifications and Groups 2.0 for the Lewende Woord app" },
   { date: "2026-08", text: "Shipping white-label Flutter apps at Inspiration Starts Here" },

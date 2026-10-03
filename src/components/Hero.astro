@@ -26,7 +26,8 @@ import { site } from "../data/site";
       <a class="btn btn-solid group" href="#work">Selected work <span class="transition-transform group-hover:translate-y-0.5">&darr;</span></a>
       <a class="btn" href={`mailto:${site.email}`}>Email</a>
       <button type="button" class="ml-2 cursor-pointer font-mono text-[12.5px] text-faint" data-open-cmd>
-        or press <kbd class="rounded-[2px] border border-line px-1.5 py-px text-muted">/</kbd>
+        <span class="hidden [@media(hover:hover)]:inline">or press <kbd class="rounded-[2px] border border-line px-1.5 py-px text-muted">/</kbd></span>
+        <span class="ulink [@media(hover:hover)]:hidden">or open the command line</span>
       </button>
     </div>
   </div>

@@ -1,7 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
 import AccentSwatches from "../components/AccentSwatches.astro";
-import { site, experience, projects, stack, education, awards } from "../data/site";
+import { site, experience, projects, stack, education, awards, currently } from "../data/site";
+import { getContributions } from "../lib/github";
+
+const graph = await getContributions(site.handle);
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthLabel = (ym: string) => `${MONTHS[Number(ym.slice(5, 7)) - 1]} ${ym.slice(0, 4)}`;
 
 const bare = (url: string) => url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 const siteUrl = Astro.site && !Astro.site.hostname.includes("localhost") ? Astro.site.toString() : null;
@@ -114,6 +119,28 @@ const contact = [
               ))
             }
           </div>
+        </section>
+
+        <section class="now">
+          <h2><span>04</span>Currently</h2>
+          <ul>
+            {
+              currently.map((c) => (
+                <li>
+                  <span class="when">{monthLabel(c.date)}</span>
+                  <span>{c.text}</span>
+                </li>
+              ))
+            }
+          </ul>
+          {
+            graph && graph.total > 0 && (
+              <p class="gh">
+                <b>{graph.total}</b> GitHub contributions in the last year{graph.streak && graph.streak.days > 1 ? ` · longest streak ${graph.streak.days} days` : ""} &middot;{" "}
+                <a href={site.links.github}>{bare(site.links.github)}</a>
+              </p>
+            )
+          }
         </section>
       </div>
 
@@ -327,6 +354,13 @@ const contact = [
   .sheet .blurb { margin-top: 2px; font-size: 11.5px; line-height: 1.5; color: var(--ink-2); }
   .sheet .plink { margin-top: 4px; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-3); }
   .sheet .plink b { font-weight: 500; color: var(--pa); }
+
+  .sheet .now ul { border-top: 1px solid var(--rule); }
+  .sheet .now li { display: grid; grid-template-columns: 22mm 1fr; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--rule); color: var(--ink-2); }
+  .sheet .now li .when { padding-top: 1px; }
+  .sheet .now .gh { margin-top: 9px; font-family: var(--font-mono); font-size: 9.5px; color: var(--ink-3); }
+  .sheet .now .gh b { font-weight: 500; color: var(--pa); }
+  .sheet .now { break-inside: avoid; }
 
   /* sidebar */
   .sheet .side { font-size: 11.5px; color: var(--ink-2); }

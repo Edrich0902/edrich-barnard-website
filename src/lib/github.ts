@@ -1,7 +1,15 @@
 // Fetched once at build time. Returns null when GitHub is unreachable so the build never fails on it.
 import { toContributions, type ContributionDay, type Contributions } from "./contributions";
 
-export async function getContributions(user: string): Promise<Contributions | null> {
+const cache = new Map<string, Promise<Contributions | null>>();
+
+/** Shared by every page in a build, so GitHub is only asked once. */
+export function getContributions(user: string): Promise<Contributions | null> {
+  if (!cache.has(user)) cache.set(user, fetchContributions(user));
+  return cache.get(user)!;
+}
+
+async function fetchContributions(user: string): Promise<Contributions | null> {
   try {
     const res = await fetch(`https://github.com/users/${user}/contributions`, {
       headers: { "User-Agent": "edrich-barnard-website build" },
